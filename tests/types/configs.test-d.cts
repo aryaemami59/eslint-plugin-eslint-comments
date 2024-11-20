@@ -9,10 +9,10 @@ expectTypeOf(configs)
   .toHaveProperty("recommended")
   .toMatchTypeOf<Linter.FlatConfig>()
 
-expectTypeOf([configs.recommended]).toMatchTypeOf<Linter.Config[]>()
+expectTypeOf([configs.recommended]).toMatchTypeOf<Linter.FlatConfig[]>()
 
-expectTypeOf(configs.recommended).toMatchTypeOf<Linter.Config>()
+expectTypeOf(configs.recommended).toMatchTypeOf<Linter.FlatConfig>()
 
 expectTypeOf(configs)
   .toHaveProperty("recommended")
-  .toMatchTypeOf<Linter.Config>()
+  .toMatchTypeOf<Linter.FlatConfig>()
