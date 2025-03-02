@@ -2,13 +2,12 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { Rule } from "eslint"
+import ignore from "ignore"
+import { getDisabledArea } from "../internal/disabled-area.ts"
+import * as utils from "../internal/utils.ts"
 
-const ignore = require("ignore")
-const { getDisabledArea } = require("../internal/disabled-area")
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: Rule.RuleModule = {
     meta: {
         docs: {
             description:
@@ -17,7 +16,7 @@ module.exports = {
             recommended: false,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-restricted-disable.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             disallow: "Disabling '{{ruleId}}' is not allowed.",
         },
@@ -36,7 +35,7 @@ module.exports = {
             return {}
         }
 
-        const ig = ignore()
+        const ig = (ignore as any)()
         for (const pattern of context.options) {
             ig.add(pattern)
         }
@@ -45,10 +44,10 @@ module.exports = {
             if (area.ruleId == null || ig.ignores(area.ruleId)) {
                 context.report({
                     loc: utils.toRuleIdLocation(
-                        context,
+                        context as any,
                         area.comment,
-                        area.ruleId
-                    ),
+                        area.ruleId,
+                    )!,
                     messageId: "disallow",
                     data: {
                         ruleId: area.ruleId || String(context.options),
@@ -56,6 +55,9 @@ module.exports = {
                 })
             }
         }
+
         return {}
     },
 }
+
+export default rule

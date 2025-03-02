@@ -2,22 +2,62 @@ extends:
   - plugin:@eslint-community/mysticatea/es2015
   - plugin:@eslint-community/mysticatea/+eslint-plugin
 
+rules:
+  "@eslint-community/mysticatea/node/file-extension-in-import":
+    - error
+    - always
+    - ".ts": "always"
+  "@eslint-community/mysticatea/ts/naming-convention":
+    - off
+  "@eslint-community/mysticatea/ts/prefer-readonly-parameter-types":
+    - off
+  "@eslint-community/mysticatea/ts/no-unsafe-member-access":
+    - off
+  "@eslint-community/mysticatea/ts/no-var-requires":
+    - off
+  "@eslint-community/mysticatea/ts/no-require-imports":
+    - off
+  "@eslint-community/mysticatea/ts/no-unsafe-assignment":
+    - off
+  "@eslint-community/mysticatea/ts/no-unsafe-call":
+    - off
+  "@eslint-community/mysticatea/ts/no-unsafe-argument":
+    - off
+  "@eslint-community/mysticatea/ts/no-unsafe-return":
+    - off
+  "@eslint-community/mysticatea/ts/ban-ts-comment":
+    - off
+  "@eslint-community/mysticatea/ts/no-non-null-asserted-optional-chain":
+    - off
+  "@eslint-community/mysticatea/ts/prefer-optional-chain":
+    - off
+  "@eslint-community/mysticatea/ts/prefer-nullish-coalescing":
+    - off
+  "@eslint-community/mysticatea/ts/no-floating-promises":
+    - off
+  "@eslint-community/mysticatea/ts/no-unnecessary-type-assertion":
+    - off
+  "no-shadow":
+    - off
+  "@eslint-community/mysticatea/node/no-missing-import": off
+  "@eslint-community/mysticatea/node/no-unpublished-import": off
+
 overrides:
   - files: "docs/.vuepress/components/*.vue"
     parserOptions:
       parser: "@babel/eslint-parser"
 
-  - files: "lib/rules/*.js"
+  - files: "lib/rules/*.ts"
     rules:
       "@eslint-community/mysticatea/eslint-plugin/require-meta-docs-url":
         - error
         - pattern: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/{{name}}.html"
 
-  - files: ["lib/configs.js", "lib/rules.js", "lib/utils.js"]
+  - files: ["lib/configs.ts", "lib/rules.ts", "lib/utils.ts"]
     rules:
       "@eslint-community/mysticatea/node/global-require": off
 
-  - files: ["tests/**/*.js", "scripts/**/*.js"]
+  - files: ["tests/**/*.ts", "scripts/**/*.ts"]
     rules:
       "@eslint-community/mysticatea/node/global-require": off
       "@eslint-community/mysticatea/node/no-sync": off
