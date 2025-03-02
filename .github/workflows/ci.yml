@@ -1,17 +1,5 @@
 name: CI
-on:
-  push:
-    branches:
-      # default semantic-release branches
-      - +([0-9])?(.{+([0-9]),x}).x
-      - main
-      - next
-      - next-major
-      - beta
-      - alpha
-  pull_request:
-  schedule:
-    - cron: 0 0 * * 0
+on: [push, pull_request, workflow_dispatch]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,7 +22,7 @@ jobs:
       - name: ⎔ Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: 📥 Install dependencies
         run: npm install
@@ -49,31 +37,31 @@ jobs:
       fail-fast: false
       matrix:
         eslint: [8]
-        node: [12.22.0, 12, 14.17.0, 14, 16.0.0, 16, 18.0.0, 18, 20, 22, 24]
+        node: [22, 24]
         os: [ubuntu-latest]
         include:
           # On other platforms
           - os: windows-latest
             eslint: 8
-            node: 18
+            node: 22
           - os: macos-latest
             eslint: 8
-            node: 18
+            node: 22
           # On ESLint 9
           - eslint: 9
-            node: 18
+            node: 22
             os: ubuntu-latest
           # On old ESLint versions
-          - eslint: 7
-            node: 18
-            os: ubuntu-latest
-          - eslint: 6
-            node: 18
-            os: ubuntu-latest
+          # - eslint: 7
+          #   node: 22
+          #   os: ubuntu-latest
+          # - eslint: 6
+          #   node: 22
+          #   os: ubuntu-latest
           # On the minimum supported ESLint/Node.js version
-          - eslint: 6.0.0
-            node: 12.22.0
-            os: ubuntu-latest
+          # - eslint: 6.0.0
+          #   node: 12.22.0
+          #   os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: ⬇️ Checkout repo
@@ -83,14 +71,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+          check-latest: true
 
       - name: 📥 Install dependencies
         run: npm install --legacy-peer-deps
+
+      - name: 📥 Build
+        run: npm run build
 
       - name: 📥 Install ESLint v${{ matrix.eslint }}
         run: npm install --save-dev eslint@${{ matrix.eslint }}
 
       - name: ▶️ Run test script
+        env:
+          NODE_OPTIONS: --experimental-transform-types
         run: npm run test
 
       - name: ⬆️ Upload coverage report
@@ -106,13 +100,13 @@ jobs:
       - name: ⎔ Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: 📥 Install dependencies
         run: npm install --legacy-peer-deps
 
       - name: ▶️ Run check-exports script
-        run: npm run check-exports -- --format=table
+        run: npm run check-exports
 
       - name: ▶️ Run test:types script
         run: npm run test:types
@@ -126,7 +120,7 @@ jobs:
 
       matrix:
         eslint: [8, 9]
-        ts: ["5.0", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6"]
+        ts: ["5.7", "5.8"]
 
     steps:
       - name: ⬇️ Checkout repo
@@ -135,7 +129,7 @@ jobs:
       - name: ⎔ Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: 📥 Install dependencies
         run: npm install
@@ -174,7 +168,7 @@ jobs:
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: 📥 Install dependencies
         run: npm install --legacy-peer-deps

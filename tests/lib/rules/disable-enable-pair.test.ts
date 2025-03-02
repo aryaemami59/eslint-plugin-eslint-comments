@@ -2,11 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import cssPlugin from "@eslint/css"
+import { Linter, RuleTester } from "eslint"
+import * as semver from "semver"
+import rule from "../../../lib/rules/disable-enable-pair.ts"
 
-const semver = require("semver")
-const { Linter, RuleTester } = require("eslint")
-const rule = require("../../../lib/rules/disable-enable-pair")
 const tester = new RuleTester()
 
 tester.run("disable-enable-pair", rule, {
@@ -102,10 +102,10 @@ var foo = 1
 a {}
 `,
                       plugins: {
-                          css: require("@eslint/css").default,
+                          css: cssPlugin,
                       },
                       language: "css/css",
-                  },
+                  } as any,
               ]
             : []),
     ],
@@ -254,7 +254,7 @@ console.log();
                   {
                       code: "/* eslint-disable no-unused-vars */ a {}",
                       plugins: {
-                          css: require("@eslint/css").default,
+                          css: cssPlugin,
                       },
                       language: "css/css",
                       errors: [
@@ -267,7 +267,7 @@ console.log();
                               endColumn: 33,
                           },
                       ],
-                  },
+                  } as any,
               ]
             : []),
     ],
