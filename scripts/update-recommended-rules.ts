@@ -2,12 +2,10 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
-
-const fs = require("fs")
-const path = require("path")
-const rules = require("./lib/rules")
-const { format } = require("./lib/utils")
+import * as fs from "node:fs"
+import * as path from "node:path"
+import rules from "./lib/rules.ts"
+import { format } from "./lib/utils.ts"
 
 // recommended.js
 format(`/** DON'T EDIT THIS FILE; was created by scripts. */
@@ -22,9 +20,9 @@ module.exports = {
             .join("\n        ")}
     },
 }
-`).then((content) =>
+`).then((content) => {
     fs.writeFileSync(
-        path.resolve(__dirname, "../lib/configs/recommended.js"),
-        content
+        path.resolve(__dirname, "../lib/configs/recommended.ts"),
+        content,
     )
-)
+})

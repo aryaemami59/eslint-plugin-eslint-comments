@@ -2,20 +2,36 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
-
-const utils = require("./utils")
+import type { AST, Linter, SourceCode } from "eslint"
+import * as utils from "./utils.ts"
 const DELIMITER = /[\s,]+/gu
-const pool = new WeakMap()
+const pool = new WeakMap<AST.Program, DisabledArea>()
 
-module.exports = class DisabledArea {
+class DisabledArea {
+    public areas: (AST.SourceLocation &
+        NonNullable<Pick<Linter.LintMessage, "ruleId">> & {
+            comment: AST.Program["comments"][number]
+            kind: string
+        })[]
+    public duplicateDisableDirectives: {
+        comment: AST.Program["comments"][number]
+        ruleId: string | null
+    }[]
+    public unusedEnableDirectives: {
+        comment: AST.Program["comments"][number]
+        ruleId: string | null
+    }[]
+    public numberOfRelatedDisableDirectives: Map<
+        AST.Program["comments"][number],
+        number
+    >
     /**
      * Get singleton instance for the given source code.
      *
      * @param {eslint.SourceCode} sourceCode - The source code to get.
      * @returns {DisabledArea} The singleton object for the source code.
      */
-    static get(sourceCode) {
+    public static get(sourceCode: SourceCode): DisabledArea {
         let retv = pool.get(sourceCode.ast)
 
         if (retv == null) {
@@ -30,7 +46,7 @@ module.exports = class DisabledArea {
     /**
      * Constructor.
      */
-    constructor() {
+    public constructor() {
         this.areas = []
         this.duplicateDisableDirectives = []
         this.unusedEnableDirectives = []
@@ -47,7 +63,12 @@ module.exports = class DisabledArea {
      * @returns {void}
      * @private
      */
-    _disable(comment, location, ruleIds, kind) {
+    private _disable(
+        comment: AST.Program["comments"][number],
+        location: AST.SourceLocation["start"],
+        ruleIds: string[] | null,
+        kind: string,
+    ) {
         if (ruleIds) {
             for (const ruleId of ruleIds) {
                 if (this._getArea(ruleId, location) != null) {
@@ -59,7 +80,7 @@ module.exports = class DisabledArea {
                     ruleId,
                     kind,
                     start: location,
-                    end: null,
+                    end: null as any,
                 })
             }
         } else {
@@ -72,7 +93,7 @@ module.exports = class DisabledArea {
                 ruleId: null,
                 kind,
                 start: location,
-                end: null,
+                end: null as any,
             })
         }
     }
@@ -87,7 +108,12 @@ module.exports = class DisabledArea {
      * @returns {void}
      * @private
      */
-    _enable(comment, location, ruleIds, kind) {
+    private _enable(
+        comment: AST.Program["comments"][number],
+        location: AST.SourceLocation["start"],
+        ruleIds: string[] | null,
+        kind: string,
+    ) {
         const relatedDisableDirectives = new Set()
 
         if (ruleIds) {
@@ -132,7 +158,7 @@ module.exports = class DisabledArea {
 
         this.numberOfRelatedDisableDirectives.set(
             comment,
-            relatedDisableDirectives.size
+            relatedDisableDirectives.size,
         )
     }
 
@@ -144,7 +170,10 @@ module.exports = class DisabledArea {
      * @returns {object|null} The area of the given ruleId and location.
      * @private
      */
-    _getArea(ruleId, location) {
+    private _getArea(
+        ruleId: string | null,
+        location: AST.SourceLocation["start"],
+    ) {
         for (let i = this.areas.length - 1; i >= 0; --i) {
             const area = this.areas[i]
 
@@ -167,7 +196,7 @@ module.exports = class DisabledArea {
      * @returns {void}
      * @private
      */
-    _scan(sourceCode) {
+    private _scan(sourceCode: SourceCode): void {
         for (const comment of sourceCode.getAllComments()) {
             const directiveComment = utils.parseDirectiveComment(comment)
             if (directiveComment == null) {
@@ -188,18 +217,18 @@ module.exports = class DisabledArea {
                 : null
 
             if (kind === "eslint-disable") {
-                this._disable(comment, comment.loc.start, ruleIds, "block")
+                this._disable(comment, comment.loc!.start, ruleIds, "block")
             } else if (kind === "eslint-enable") {
-                this._enable(comment, comment.loc.start, ruleIds, "block")
+                this._enable(comment, comment.loc!.start, ruleIds, "block")
             } else if (kind === "eslint-disable-line") {
-                const line = comment.loc.start.line
+                const line = comment.loc!.start.line
                 const start = { line, column: 0 }
                 const end = { line: line + 1, column: -1 }
 
                 this._disable(comment, start, ruleIds, "line")
                 this._enable(comment, end, ruleIds, "line")
             } else if (kind === "eslint-disable-next-line") {
-                const line = comment.loc.start.line
+                const line = comment.loc!.start.line
                 const start = { line: line + 1, column: 0 }
                 const end = { line: line + 2, column: -1 }
 
@@ -209,3 +238,5 @@ module.exports = class DisabledArea {
         }
     }
 }
+
+export default DisabledArea

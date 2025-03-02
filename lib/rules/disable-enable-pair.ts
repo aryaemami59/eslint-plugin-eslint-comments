@@ -2,12 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { Rule } from "eslint"
+import DisabledArea from "../internal/disabled-area.ts"
+import * as utils from "../internal/utils.ts"
 
-const DisabledArea = require("../internal/disabled-area")
-const utils = require("../internal/utils")
-
-module.exports = {
+const disableEnablePair: Rule.RuleModule = {
     meta: {
         docs: {
             description:
@@ -16,7 +15,7 @@ module.exports = {
             recommended: true,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/disable-enable-pair.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             missingPair: "Requires 'eslint-enable' directive.",
             missingRulePair:
@@ -54,20 +53,22 @@ module.exports = {
                     }
                     if (
                         allowWholeFile &&
-                        utils.lte(area.start, node.loc.start)
+                        utils.lte(area.start, node?.loc?.start!)
                     ) {
                         continue
                     }
 
                     context.report({
-                        loc: utils.toRuleIdLocation(area.comment, area.ruleId),
+                        loc: utils.toRuleIdLocation(area.comment, area.ruleId)!,
                         messageId: area.ruleId
                             ? "missingRulePair"
                             : "missingPair",
-                        data: area,
+                        data: area as Record<string, any>,
                     })
                 }
             },
         }
     },
 }
+
+export default disableEnablePair

@@ -2,10 +2,8 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
-
-const { RuleTester } = require("eslint")
-const rule = require("../../../lib/rules/no-use")
+import { RuleTester } from "eslint"
+import rule from "../../../lib/rules/no-use.ts"
 const tester = new RuleTester()
 
 tester.run("no-use", rule, {

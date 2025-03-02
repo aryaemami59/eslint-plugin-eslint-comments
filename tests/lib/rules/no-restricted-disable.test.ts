@@ -2,18 +2,19 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
-
-const semver = require("semver")
-const { Linter, RuleTester } = require("eslint")
-const rule = require("../../../lib/rules/no-restricted-disable")
+import { Linter, RuleTester } from "eslint"
+import * as semver from "semver"
+import rule from "../../../lib/rules/no-restricted-disable.ts"
 const coreRules = new Linter({ configType: "eslintrc" }).getRules()
 let tester = null
 
+// @ts-expect-error
 if (typeof RuleTester.prototype.defineRule === "function") {
     // ESLint < 9
     tester = new RuleTester()
+    // @ts-expect-error
     tester.defineRule("foo/no-undef", coreRules.get("no-undef"))
+    // @ts-expect-error
     tester.defineRule("foo/no-redeclare", coreRules.get("no-redeclare"))
 } else {
     // ESLint 9
@@ -21,8 +22,8 @@ if (typeof RuleTester.prototype.defineRule === "function") {
         plugins: {
             foo: {
                 rules: {
-                    "no-undef": coreRules.get("no-undef"),
-                    "no-redeclare": coreRules.get("no-redeclare"),
+                    "no-undef": coreRules.get("no-undef")!,
+                    "no-redeclare": coreRules.get("no-redeclare")!,
                 },
             },
         },

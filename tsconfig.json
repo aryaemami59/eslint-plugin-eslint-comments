@@ -1,20 +1,25 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": false,
-    "esModuleInterop": false,
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noEmit": true,
+    "noErrorTruncation": true,
+    "outDir": "/dist",
     "resolveJsonModule": true,
+    "rewriteRelativeImportExtensions": true,
+    "rootDir": "./",
     "skipLibCheck": true,
+    "sourceMap": true,
     "strict": true,
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "useUnknownInCatchVariables": true,
-    "verbatimModuleSyntax": true
+    "useUnknownInCatchVariables": true
   },
   "include": ["."]
 }
