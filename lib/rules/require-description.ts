@@ -2,11 +2,10 @@
  * @author Yosuke Ota <https://github.com/ota-meshi>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { Rule } from "eslint"
+import * as utils from "../internal/utils.ts"
 
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: Rule.RuleModule = {
     meta: {
         docs: {
             description:
@@ -15,7 +14,7 @@ module.exports = {
             recommended: false,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/require-description.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             missingDescription:
                 "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
@@ -52,7 +51,7 @@ module.exports = {
     create(context) {
         const sourceCode = context.getSourceCode()
         const ignores = new Set(
-            (context.options[0] && context.options[0].ignore) || []
+            (context.options[0] && context.options[0].ignore) || [],
         )
 
         return {
@@ -68,7 +67,7 @@ module.exports = {
                     }
                     if (!directiveComment.description) {
                         context.report({
-                            loc: utils.toForceLocation(comment.loc),
+                            loc: utils.toForceLocation(comment.loc!),
                             messageId: "missingDescription",
                         })
                     }
@@ -77,3 +76,5 @@ module.exports = {
         }
     },
 }
+
+export default rule

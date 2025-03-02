@@ -1,24 +1,19 @@
-"use strict"
+import type { Linter } from "eslint"
+import { rules as rulesRecommended } from "./lib/configs/recommended.ts"
+import { rules } from "./lib/rules.ts"
+import packageJson from "./package.json"
 
-const { rules: rulesRecommended } = require("./lib/configs/recommended")
-const rules = require("./lib/rules")
-const { name, version } = require("./package.json")
+const { name, version } = packageJson
 
 const plugin = {
-    meta: { name, version },
-    rules,
+  meta: { name, version },
+  rules,
 }
 
-const recommended = {
+export const recommended: Linter.FlatConfig = {
   name: "@eslint-community/eslint-comments/recommended",
   plugins: {
     "@eslint-community/eslint-comments": plugin,
   },
   rules: rulesRecommended,
 }
-
-module.exports = {
-  recommended,
-}
-
-module.exports.default = module.exports

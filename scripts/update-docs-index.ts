@@ -2,18 +2,25 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
-
-const fs = require("fs")
-const path = require("path")
-const { withCategories } = require("./lib/rules")
+import * as fs from "fs"
+import * as path from "path"
+import { withCategories } from "./lib/rules.ts"
 
 /**
  * Convert a given rule to a table row.
  * @param {{id:string,name:string,category:string,description:string,recommended:boolean,fixable:boolean,deprecated:boolean,replacedBy:string[]}} rule The rule object.
  * @returns {string} The table row of the rule.
  */
-function toTableRow(rule) {
+function toTableRow(rule: {
+    id: string
+    name: string
+    category: string
+    description: string
+    recommended: boolean
+    fixable: boolean
+    deprecated: boolean
+    replacedBy: string[] | null
+}): string {
     const mark = `${rule.recommended ? "🌟" : ""}${rule.fixable ? "✒️" : ""}`
     const link = `[@eslint-community/eslint-comments/<wbr>${rule.name}](./${rule.name}.md)`
     const description = rule.description || "(no description)"
@@ -25,7 +32,22 @@ function toTableRow(rule) {
  * @param {{category:string,rules:{id:string,name:string,category:string,description:string,recommended:boolean,fixable:boolean,deprecated:boolean,replacedBy:string[]}[]}} categoryInfo The category information to convert.
  * @returns {string} The section of the category.
  */
-function toCategorySection({ category, rules }) {
+function toCategorySection({
+    category,
+    rules,
+}: {
+    category: string
+    rules: {
+        id: string
+        name: string
+        category: string
+        description: string
+        recommended: boolean
+        fixable: boolean
+        deprecated: boolean
+        replacedBy: string[] | null
+    }[]
+}): string {
     return `## ${category}
 
 | Rule ID | Description |    |
@@ -42,5 +64,5 @@ fs.writeFileSync(
 - ✒️ mark: the rule which is fixable by \`eslint --fix\` command.
 
 ${withCategories.map(toCategorySection).join("\n")}
-`
+`,
 )

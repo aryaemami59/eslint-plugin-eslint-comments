@@ -2,11 +2,10 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { Rule } from "eslint"
+import * as utils from "../internal/utils.ts"
 
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: Rule.RuleModule = {
     meta: {
         docs: {
             description:
@@ -15,7 +14,7 @@ module.exports = {
             recommended: true,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-unlimited-disable.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             unexpected:
                 "Unexpected unlimited '{{kind}}' comment. Specify some rule names to disable.",
@@ -46,7 +45,7 @@ module.exports = {
                     }
                     if (!directiveComment.value) {
                         context.report({
-                            loc: utils.toForceLocation(comment.loc),
+                            loc: utils.toForceLocation(comment.loc!),
                             messageId: "unexpected",
                             data: { kind: directiveComment.kind },
                         })
@@ -56,3 +55,5 @@ module.exports = {
         }
     },
 }
+
+export default rule
