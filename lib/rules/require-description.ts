@@ -2,15 +2,30 @@
  * @author Yosuke Ota <https://github.com/ota-meshi>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { JSRuleDefinition } from "eslint"
+import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
+import * as utils from "../internal/utils.ts"
 
-const {
-    getAllDirectiveComments,
-} = require("../internal/get-all-directive-comments")
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: JSRuleDefinition<{
+    MessageIds: "missingDescription"
+    RuleOptions: [
+        {
+            ignore?: (
+                | "eslint"
+                | "eslint-disable"
+                | "eslint-disable-line"
+                | "eslint-disable-next-line"
+                | "eslint-enable"
+                | "eslint-env"
+                | "exported"
+                | "global"
+                | "globals"
+            )[]
+        },
+    ]
+}> = {
     meta: {
+        defaultOptions: [{ ignore: [] }],
         docs: {
             description:
                 "require include descriptions in ESLint directive-comments",
@@ -18,7 +33,7 @@ module.exports = {
             recommended: false,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/require-description.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             missingDescription:
                 "Unexpected undescribed directive comment. Include descriptions to explain why the comment is necessary.",
@@ -27,6 +42,7 @@ module.exports = {
             {
                 type: "object",
                 properties: {
+                    // eslint-disable-next-line eslint-plugin/require-meta-schema-description
                     ignore: {
                         type: "array",
                         items: {
@@ -68,6 +84,9 @@ module.exports = {
                 })
             }
         }
+
         return {}
     },
 }
+
+export default rule

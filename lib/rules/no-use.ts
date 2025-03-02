@@ -2,22 +2,37 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { JSRuleDefinition } from "eslint"
+import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
+import * as utils from "../internal/utils.ts"
 
-const {
-    getAllDirectiveComments,
-} = require("../internal/get-all-directive-comments")
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: JSRuleDefinition<{
+    MessageIds: "disallow"
+    RuleOptions: [
+        {
+            allow?: (
+                | "eslint"
+                | "eslint-disable"
+                | "eslint-disable-line"
+                | "eslint-disable-next-line"
+                | "eslint-enable"
+                | "eslint-env"
+                | "exported"
+                | "global"
+                | "globals"
+            )[]
+        },
+    ]
+}> = {
     meta: {
+        defaultOptions: [{ allow: [] }],
         docs: {
             description: "disallow ESLint directive-comments",
             category: "Stylistic Issues",
             recommended: false,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-use.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             disallow: "Unexpected ESLint directive comment.",
         },
@@ -25,6 +40,7 @@ module.exports = {
             {
                 type: "object",
                 properties: {
+                    // eslint-disable-next-line eslint-plugin/require-meta-schema-description
                     allow: {
                         type: "array",
                         items: {
@@ -63,6 +79,9 @@ module.exports = {
                 })
             }
         }
+
         return {}
     },
 }
+
+export default rule

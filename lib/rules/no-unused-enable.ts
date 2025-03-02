@@ -2,12 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { JSRuleDefinition } from "eslint"
+import { getDisabledArea } from "../internal/disabled-area.ts"
+import * as utils from "../internal/utils.ts"
 
-const { getDisabledArea } = require("../internal/disabled-area")
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: JSRuleDefinition<{ MessageIds: "unused" | "unusedRule" }> = {
     meta: {
         docs: {
             description: "disallow unused `eslint-enable` comments",
@@ -15,7 +14,7 @@ module.exports = {
             recommended: true,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-unused-enable.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             unused: "ESLint rules are re-enabled but those have not been disabled.",
             unusedRule:
@@ -30,11 +29,18 @@ module.exports = {
 
         for (const item of disabledArea.unusedEnableDirectives) {
             context.report({
-                loc: utils.toRuleIdLocation(context, item.comment, item.ruleId),
+                loc: utils.toRuleIdLocation(
+                    context,
+                    item.comment,
+                    item.ruleId
+                )!,
                 messageId: item.ruleId ? "unusedRule" : "unused",
                 data: item,
             })
         }
+
         return {}
     },
 }
+
+export default rule

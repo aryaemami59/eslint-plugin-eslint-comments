@@ -2,17 +2,38 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { AST, Linter, Rule, SourceCode } from "eslint"
+import * as utils from "./utils.ts"
 
-const utils = require("./utils")
 const DELIMITER = /[\s,]+/gu
-const pool = new WeakMap()
+const pool = new WeakMap<
+    AST.Program,
+    DisabledAreaForLanguagePlugin | DisabledAreaForLegacy
+>()
 
 class DisabledArea {
+    public areas: (AST.SourceLocation &
+        NonNullable<Pick<Linter.LintMessage, "ruleId">> & {
+            comment: AST.Program["comments"][number]
+            kind: string
+        })[]
+    public duplicateDisableDirectives: {
+        comment: AST.Program["comments"][number]
+        ruleId: string | null
+    }[]
+    public unusedEnableDirectives: {
+        comment: AST.Program["comments"][number]
+        ruleId: string | null
+    }[]
+    public numberOfRelatedDisableDirectives: Map<
+        AST.Program["comments"][number],
+        number
+    >
+
     /**
      * Constructor.
      */
-    constructor() {
+    public constructor() {
         this.areas = []
         this.duplicateDisableDirectives = []
         this.unusedEnableDirectives = []
@@ -29,7 +50,12 @@ class DisabledArea {
      * @returns {void}
      * @protected
      */
-    _disable(comment, location, ruleIds, kind) {
+    protected _disable(
+        comment: AST.Program["comments"][number],
+        location: AST.SourceLocation["start"],
+        ruleIds: string[] | null,
+        kind: Lowercase<AST.Program["comments"][number]["type"]>
+    ): void {
         if (ruleIds) {
             for (const ruleId of ruleIds) {
                 if (this._getArea(ruleId, location) != null) {
@@ -41,7 +67,7 @@ class DisabledArea {
                     ruleId,
                     kind,
                     start: location,
-                    end: null,
+                    end: null as any,
                 })
             }
         } else {
@@ -54,7 +80,7 @@ class DisabledArea {
                 ruleId: null,
                 kind,
                 start: location,
-                end: null,
+                end: null as any,
             })
         }
     }
@@ -69,7 +95,12 @@ class DisabledArea {
      * @returns {void}
      * @protected
      */
-    _enable(comment, location, ruleIds, kind) {
+    protected _enable(
+        comment: AST.Program["comments"][number],
+        location: AST.SourceLocation["start"],
+        ruleIds: string[] | null,
+        kind: Lowercase<AST.Program["comments"][number]["type"]>
+    ): void {
         const relatedDisableDirectives = new Set()
 
         if (ruleIds) {
@@ -126,7 +157,16 @@ class DisabledArea {
      * @returns {object|null} The area of the given ruleId and location.
      * @private
      */
-    _getArea(ruleId, location) {
+    private _getArea(
+        ruleId: string | null,
+        location: AST.SourceLocation["start"]
+    ):
+        | (AST.SourceLocation &
+              Pick<Linter.LintMessage, "ruleId"> & {
+                  comment: AST.Program["comments"][number]
+                  kind: string
+              })
+        | null {
         for (let i = this.areas.length - 1; i >= 0; --i) {
             const area = this.areas[i]
 
@@ -150,9 +190,9 @@ class DisabledAreaForLanguagePlugin extends DisabledArea {
      * @param {import('@eslint/core').TextSourceCode} sourceCode - The source code to scan.
      * @returns {void}
      */
-    _scan(sourceCode) {
-        const disableDirectives = sourceCode.getDisableDirectives()
-        for (const directive of disableDirectives.directives) {
+    public _scan(sourceCode: SourceCode): void {
+        const disableDirectives = (sourceCode as any).getDisableDirectives?.()!
+        for (const directive of disableDirectives!.directives) {
             if (
                 ![
                     "disable",
@@ -167,25 +207,32 @@ class DisabledAreaForLanguagePlugin extends DisabledArea {
                 ? directive.value.split(DELIMITER)
                 : null
 
-            const loc = sourceCode.getLoc(directive.node)
+            const loc: AST.SourceLocation = (sourceCode as any).getLoc(
+                directive.node
+            )
             if (directive.type === "disable") {
-                this._disable(directive.node, loc.start, ruleIds, "block")
+                this._disable(
+                    directive.node as any,
+                    loc.start,
+                    ruleIds,
+                    "block"
+                )
             } else if (directive.type === "enable") {
-                this._enable(directive.node, loc.start, ruleIds, "block")
+                this._enable(directive.node as any, loc.start, ruleIds, "block")
             } else if (directive.type === "disable-line") {
-                const line = loc.start.line
+                const { line } = loc.start
                 const start = { line, column: 0 }
                 const end = { line: line + 1, column: -1 }
 
-                this._disable(directive.node, start, ruleIds, "line")
-                this._enable(directive.node, end, ruleIds, "line")
+                this._disable(directive.node as any, start, ruleIds, "line")
+                this._enable(directive.node as any, end, ruleIds, "line")
             } else if (directive.type === "disable-next-line") {
-                const line = loc.start.line
+                const { line } = loc.start
                 const start = { line: line + 1, column: 0 }
                 const end = { line: line + 2, column: -1 }
 
-                this._disable(directive.node, start, ruleIds, "line")
-                this._enable(directive.node, end, ruleIds, "line")
+                this._disable(directive.node as any, start, ruleIds, "line")
+                this._enable(directive.node as any, end, ruleIds, "line")
             }
         }
     }
@@ -198,14 +245,16 @@ class DisabledAreaForLegacy extends DisabledArea {
      * @param {eslint.SourceCode} sourceCode - The source code to scan.
      * @returns {void}
      */
-    _scan(sourceCode) {
-        for (const comment of sourceCode.getAllComments()) {
+    public _scan(sourceCode: SourceCode): void {
+        for (const comment of (
+            sourceCode as any
+        ).getAllComments() as AST.Program["comments"]) {
             const directiveComment = utils.parseDirectiveComment(comment)
             if (directiveComment == null) {
                 continue
             }
 
-            const kind = directiveComment.kind
+            const { kind } = directiveComment
             if (
                 ![
                     "eslint-disable",
@@ -221,18 +270,18 @@ class DisabledAreaForLegacy extends DisabledArea {
                 : null
 
             if (kind === "eslint-disable") {
-                this._disable(comment, comment.loc.start, ruleIds, "block")
+                this._disable(comment, comment.loc!.start, ruleIds, "block")
             } else if (kind === "eslint-enable") {
-                this._enable(comment, comment.loc.start, ruleIds, "block")
+                this._enable(comment, comment.loc!.start, ruleIds, "block")
             } else if (kind === "eslint-disable-line") {
-                const line = comment.loc.start.line
+                const { line } = comment.loc!.start
                 const start = { line, column: 0 }
                 const end = { line: line + 1, column: -1 }
 
                 this._disable(comment, start, ruleIds, "line")
                 this._enable(comment, end, ruleIds, "line")
             } else if (kind === "eslint-disable-next-line") {
-                const line = comment.loc.start.line
+                const { line } = comment.loc!.start
                 const start = { line: line + 1, column: 0 }
                 const end = { line: line + 2, column: -1 }
 
@@ -243,26 +292,24 @@ class DisabledAreaForLegacy extends DisabledArea {
     }
 }
 
-module.exports = {
-    /**
-     * Get singleton instance for the given rule context.
-     *
-     * @param {import("@eslint/core").RuleContext} context - The rule context code to get.
-     * @returns {DisabledArea} The singleton object for the rule context.
-     */
-    getDisabledArea(context) {
-        const sourceCode = context.sourceCode || context.getSourceCode()
-        let retv = pool.get(sourceCode.ast)
+/**
+ * Get singleton instance for the given rule context.
+ *
+ * @param {import("@eslint/core").RuleContext} context - The rule context code to get.
+ * @returns {DisabledArea} The singleton object for the rule context.
+ */
+export function getDisabledArea(context: Rule.RuleContext): DisabledArea {
+    const sourceCode = context.sourceCode || context.getSourceCode()
+    let retv = pool.get(sourceCode.ast)
 
-        if (retv == null) {
-            retv =
-                typeof sourceCode.getDisableDirectives === "function"
-                    ? new DisabledAreaForLanguagePlugin()
-                    : new DisabledAreaForLegacy()
-            retv._scan(sourceCode)
-            pool.set(sourceCode.ast, retv)
-        }
+    if (retv == null) {
+        retv =
+            typeof (sourceCode as any).getDisableDirectives === "function"
+                ? new DisabledAreaForLanguagePlugin()
+                : new DisabledAreaForLegacy()
+        retv._scan(sourceCode)
+        pool.set(sourceCode.ast, retv)
+    }
 
-        return retv
-    },
+    return retv
 }

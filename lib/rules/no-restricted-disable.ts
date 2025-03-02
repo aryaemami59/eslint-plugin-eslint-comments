@@ -2,14 +2,17 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { JSRuleDefinition } from "eslint"
+import ignore from "ignore"
+import { getDisabledArea } from "../internal/disabled-area.ts"
+import * as utils from "../internal/utils.ts"
 
-const ignore = require("ignore")
-const { getDisabledArea } = require("../internal/disabled-area")
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: JSRuleDefinition<{
+    RuleOptions: string[]
+    MessageIds: "disallow"
+}> = {
     meta: {
+        defaultOptions: [],
         docs: {
             description:
                 "disallow `eslint-disable` comments about specific rules",
@@ -17,7 +20,7 @@ module.exports = {
             recommended: false,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-restricted-disable.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             disallow: "Disabling '{{ruleId}}' is not allowed.",
         },
@@ -48,7 +51,7 @@ module.exports = {
                         context,
                         area.comment,
                         area.ruleId
-                    ),
+                    )!,
                     messageId: "disallow",
                     data: {
                         ruleId: area.ruleId || String(context.options),
@@ -56,6 +59,9 @@ module.exports = {
                 })
             }
         }
+
         return {}
     },
 }
+
+export default rule

@@ -2,12 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { JSRuleDefinition } from "eslint"
+import { getDisabledArea } from "../internal/disabled-area.ts"
+import * as utils from "../internal/utils.ts"
 
-const { getDisabledArea } = require("../internal/disabled-area")
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: JSRuleDefinition<{ MessageIds: "aggregatingEnable" }> = {
     meta: {
         docs: {
             description:
@@ -16,7 +15,7 @@ module.exports = {
             recommended: true,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-aggregating-enable.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             aggregatingEnable:
                 "This `eslint-enable` comment affects {{count}} `eslint-disable` comments. An `eslint-enable` comment should be for an `eslint-disable` comment.",
@@ -34,12 +33,15 @@ module.exports = {
 
             if (count >= 2) {
                 context.report({
-                    loc: utils.toForceLocation(utils.getLoc(context, comment)),
+                    loc: utils.toForceLocation(comment.loc!),
                     messageId: "aggregatingEnable",
                     data: { count },
                 })
             }
         }
+
         return {}
     },
 }
+
+export default rule

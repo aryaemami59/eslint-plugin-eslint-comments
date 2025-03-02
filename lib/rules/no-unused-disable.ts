@@ -2,12 +2,12 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
-
+import type { JSRuleDefinition } from "eslint"
 // Patch `Linter#verify` to work.
-require("../utils/patch")()
+import patch from "../utils/patch.ts"
+patch()
 
-module.exports = {
+const rule: JSRuleDefinition = {
     meta: {
         docs: {
             description: "disallow unused `eslint-disable` comments",
@@ -15,8 +15,8 @@ module.exports = {
             recommended: false,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-unused-disable.html",
         },
-        fixable: null,
-        // eslint-disable-next-line @eslint-community/mysticatea/eslint-plugin/prefer-message-ids
+        fixable: null as any,
+        // eslint-disable-next-line eslint-plugin/prefer-message-ids
         messages: {},
         schema: [],
         type: "problem",
@@ -33,3 +33,5 @@ module.exports = {
         return {}
     },
 }
+
+export default rule
