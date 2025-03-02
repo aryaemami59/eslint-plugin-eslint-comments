@@ -2,14 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { Rule } from "eslint"
+import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
+import * as utils from "../internal/utils.ts"
 
-const {
-    getAllDirectiveComments,
-} = require("../internal/get-all-directive-comments")
-const utils = require("../internal/utils")
-
-module.exports = {
+const rule: Rule.RuleModule = {
     meta: {
         docs: {
             description: "disallow ESLint directive-comments",
@@ -17,7 +14,7 @@ module.exports = {
             recommended: false,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/no-use.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             disallow: "Unexpected ESLint directive comment.",
         },
@@ -52,10 +49,12 @@ module.exports = {
 
     create(context) {
         const allowed = new Set(
-            (context.options[0] && context.options[0].allow) || []
+            (context.options[0] && context.options[0].allow) || [],
         )
 
-        for (const directiveComment of getAllDirectiveComments(context)) {
+        for (const directiveComment of getAllDirectiveComments(
+            context as any,
+        )) {
             if (!allowed.has(directiveComment.kind)) {
                 context.report({
                     loc: utils.toForceLocation(directiveComment.loc),
@@ -63,6 +62,9 @@ module.exports = {
                 })
             }
         }
+
         return {}
     },
 }
+
+export default rule

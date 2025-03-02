@@ -5,16 +5,44 @@
   "engines": {
     "node": "^12.22.0 || ^14.17.0 || >=16.0.0"
   },
-  "main": "index.js",
-  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
   "files": [
-    "configs.js",
-    "lib"
+    "lib",
+    "dist"
   ],
   "exports": {
-    "./configs": "./configs.js",
-    ".": "./index.js"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "default": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./configs": {
+      "import": {
+        "types": "./dist/configs.d.ts",
+        "default": "./dist/configs.js"
+      },
+      "default": {
+        "types": "./dist/configs.d.cts",
+        "default": "./dist/configs.cjs"
+      }
+    },
+    "./package.json": "./package.json"
   },
+  "typesVersions": {
+    "*": {
+      "configs": [
+        "./dist/configs.d.ts"
+      ]
+    }
+  },
+  "sideEffects": false,
   "peerDependencies": {
     "eslint": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0"
   },
@@ -23,36 +51,50 @@
     "ignore": "^5.2.4"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@babel/core": "^7.22.9",
     "@babel/eslint-parser": "^7.22.9",
-    "@eslint-community/eslint-plugin-mysticatea": "^15.5.1",
-    "@eslint/core": "^0.13.0",
+    "@eslint-community/eslint-plugin-mysticatea": "^15.8.0",
+    "@eslint/core": "^1.0.0",
     "@eslint/css": "^0.6.0",
-    "@types/node": "^14.18.54",
+    "@types/cross-spawn": "^6.0.6",
+    "@types/eslint": "^8",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.10.1",
+    "@types/semver": "^7.7.1",
     "@vuepress/plugin-pwa": "^1.9.9",
     "cross-spawn": "^7.0.3",
-    "esbuild": "^0.19.3",
-    "eslint": "^8.46.0",
+    "esbuild": "^0.27.0",
+    "eslint": "^8.57.1",
+    "eslint-v9": "npm:eslint@^9.39.1",
+    "expect-type": "^1.2.2",
     "fs-extra": "^10.1.0",
-    "mocha": "^10.4.0",
+    "mocha": "^11.7.5",
     "monaco-editor": "^0.47.0",
     "nyc": "^15.1.0",
     "opener": "^1.5.2",
-    "rimraf": "^3.0.2",
-    "semver": "^7.5.4",
-    "vite-plugin-eslint4b": "^0.2.1",
+    "rimraf": "^6.1.2",
+    "rolldown": "^1.0.0-beta.52",
+    "semver": "^7.7.3",
+    "tsdown": "^0.17.0-beta.5",
+    "typescript": "^5.9.3",
+    "vite-plugin-eslint4b": "^0.6.0",
     "vitepress": "^1.0.0-rc.15"
   },
   "scripts": {
+    "build": "npm run clean && tsdown --config-loader='unrun' --config=tsdown.config.mts",
+    "prepack": "npm run build",
     "preversion": "npm test",
     "version": "node scripts/update && git add .",
     "postversion": "git push && git push --tags",
-    "clean": "rimraf .nyc_output coverage docs/.vitepress/cache",
+    "clean": "rimraf -v .nyc_output/ coverage/ docs/.vitepress/cache/ dist/ .rolldown/",
     "docs:build": "vitepress build docs",
     "docs:watch": "vitepress dev docs",
     "lint": "eslint lib scripts tests",
-    "test": "nyc npm run debug",
-    "debug": "mocha \"tests/lib/**/*.js\" --reporter dot --timeout 8000",
+    "test": "set NODE_OPTIONS=--experimental-transform-types && npm run debug",
+    "debug": "mocha \"tests/lib/**/*.test.ts\" --reporter dot --timeout 8000",
+    "typecheck": "tsc -p tsconfig.json",
+    "check-exports": "attw --pack",
     "coverage": "nyc report --reporter lcov && opener coverage/lcov-report/index.html",
     "watch": "npm run -s test -- --watch --growl"
   },

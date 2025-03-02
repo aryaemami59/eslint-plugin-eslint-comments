@@ -34,7 +34,7 @@ jobs:
       - name: ⎔ Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: 📥 Install dependencies
         run: npm install
@@ -43,33 +43,32 @@ jobs:
         run: npm run lint
 
   test:
-    name:
-      🧪 Test (Node@${{ matrix.node }} - ESLint@${{ matrix.eslint }} - ${{
+    name: 🧪 Test (Node@${{ matrix.node }} - ESLint@${{ matrix.eslint }} - ${{
       matrix.os }})
     strategy:
       fail-fast: false
       matrix:
         eslint: [8]
-        node: [12.22.0, 12, 14.17.0, 14, 16.0.0, 16, 18.0.0, 18, 20, 22, 24]
+        node: [22, 24]
         os: [ubuntu-latest]
         include:
           # On other platforms
           - os: windows-latest
             eslint: 8
-            node: 18
+            node: 22
           - os: macos-latest
             eslint: 8
-            node: 18
+            node: 22
           # On ESLint 9
           - eslint: 9
-            node: 18
+            node: 22
             os: ubuntu-latest
           # On old ESLint versions
           - eslint: 7
-            node: 18
+            node: 22
             os: ubuntu-latest
           - eslint: 6
-            node: 18
+            node: 22
             os: ubuntu-latest
           # On the minimum supported ESLint/Node.js version
           - eslint: 6.0.0
@@ -84,25 +83,94 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+          check-latest: true
 
       - name: 📥 Install dependencies
         run: npm install --legacy-peer-deps
+
+      - name: 📥 Build
+        run: npm run build
 
       - name: 📥 Install ESLint v${{ matrix.eslint }}
         run: npm install --save-dev eslint@${{ matrix.eslint }}
 
       - name: ▶️ Run test script
+        env:
+          NODE_OPTIONS: --experimental-transform-types
         run: npm run test
 
       - name: ⬆️ Upload coverage report
         uses: codecov/codecov-action@v4
 
+  are-the-types-wrong:
+    name: 🤔 Are the types wrong?
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 📥 Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: ▶️ Run check-exports script
+        run: npm run check-exports
+
+      - name: ▶️ Run typecheck script
+        run: npm run typecheck
+
+  type-tests:
+    name: 🧪 Type tests with ESLint ${{ matrix.eslint }} and TypeScript ${{ matrix.ts }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        eslint: [8, 9]
+        ts: ["5.7", "5.8", "5.9"]
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 📥 Install dependencies
+        run: npm install
+
+      - name: Pack the package
+        id: pack
+        run: npm install "$(npm pack | tail -n1)"
+
+      - name: 📥 Uninstall @types/eslint
+        if: matrix.eslint != 8
+        run: npm uninstall @types/eslint
+
+      - name: 📥 Install ESLint version ${{ matrix.eslint }}
+        run: npm install --save-dev eslint@${{ matrix.eslint }}
+
+      - name: 📥 Install TypeScript version ${{ matrix.ts }}
+        run: npm install --save-dev typescript@${{ matrix.ts }} -f
+
+      - name: ▶️ Run typecheck script
+        run: npm run typecheck
+
+      - name: 📝 List version of ESLint
+        run: npm why eslint @types/eslint
+
   release:
     name: 🚀 Release
-    needs: [ lint, test ]
+    needs: [lint, test]
     runs-on: ubuntu-latest
-    if:
-      github.repository == 'eslint-community/eslint-plugin-eslint-comments' &&
+    if: github.repository == 'eslint-community/eslint-plugin-eslint-comments' &&
       contains('refs/heads/main,refs/heads/next,refs/heads/beta,refs/heads/alpha',
       github.ref) && github.event_name == 'push'
     steps:

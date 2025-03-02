@@ -2,12 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-"use strict"
+import type { Rule } from "eslint"
+import { getDisabledArea } from "../internal/disabled-area.ts"
+import * as utils from "../internal/utils.ts"
 
-const { getDisabledArea } = require("../internal/disabled-area")
-const utils = require("../internal/utils")
-
-module.exports = {
+const disableEnablePair: Rule.RuleModule = {
     meta: {
         docs: {
             description:
@@ -16,7 +15,7 @@ module.exports = {
             recommended: true,
             url: "https://eslint-community.github.io/eslint-plugin-eslint-comments/rules/disable-enable-pair.html",
         },
-        fixable: null,
+        fixable: null as any,
         messages: {
             missingPair: "Requires 'eslint-enable' directive.",
             missingRulePair:
@@ -37,11 +36,10 @@ module.exports = {
     },
 
     create(context) {
-        const allowWholeFile =
+        const allowWholeFile: boolean =
             context.options[0] && context.options[0].allowWholeFile
-        const disabledArea = getDisabledArea(context)
+        const disabledArea = getDisabledArea(context as any)
 
-        /** @type {import('@eslint/core').TextSourceCode} */
         const sourceCode = context.sourceCode || context.getSourceCode()
 
         const firstToken =
@@ -57,17 +55,27 @@ module.exports = {
             }
             if (
                 allowWholeFile &&
-                utils.lte(area.start, utils.getLoc(context, firstToken).start)
+                utils.lte(
+                    area.start,
+                    utils.getLoc(context as any, firstToken).start,
+                )
             ) {
                 continue
             }
 
             context.report({
-                loc: utils.toRuleIdLocation(context, area.comment, area.ruleId),
+                loc: utils.toRuleIdLocation(
+                    context as any,
+                    area.comment,
+                    area.ruleId,
+                )!,
                 messageId: area.ruleId ? "missingRulePair" : "missingPair",
-                data: area,
+                data: area as Record<string, any>,
             })
         }
+
         return {}
     },
-}
+} as const satisfies Rule.RuleModule
+
+export default disableEnablePair

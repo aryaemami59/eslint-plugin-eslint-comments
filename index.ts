@@ -1,8 +1,3 @@
-/** DON'T EDIT THIS FILE WHICH WAS CREATED BY 'scripts/generate-index.js'. */
-"use strict"
-
-module.exports = {
-    configs: require("./lib/configs"),
-    rules: require("./lib/rules"),
-    utils: require("./lib/utils"),
-}
+export * as configs from "./lib/configs.ts"
+export { rules } from "./lib/rules.ts"
+export * as utils from "./lib/utils.ts"
