@@ -1,9 +1,7 @@
 import type { ESLint, Linter, Rule } from "eslint"
 import { rulesRecommended } from "./lib/configs/recommended.ts"
 import { rules } from "./lib/rules.ts"
-import packageJson from "./package.json" with { type: "json" };
-
-const { name, version } = packageJson
+import packageJson from "./package.json" with { type: "json" }
 
 const plugin: {
     meta: {
@@ -22,7 +20,10 @@ const plugin: {
         "require-description": Rule.RuleModule
     }
 } = {
-    meta: { name, version },
+    meta: {
+        name: packageJson.name,
+        version: packageJson.version,
+    },
     rules,
 } as const satisfies ESLint.Plugin
 

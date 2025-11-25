@@ -9,7 +9,6 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "files": [
-    "configs.js",
     "lib",
     "dist"
   ],
@@ -43,6 +42,7 @@
       ]
     }
   },
+  "sideEffects": false,
   "peerDependencies": {
     "eslint": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0"
   },
@@ -65,7 +65,7 @@
     "@types/semver": "^7.7.1",
     "@vuepress/plugin-pwa": "^1.9.9",
     "cross-spawn": "^7.0.3",
-    "esbuild": "^0.19.3",
+    "esbuild": "^0.27.0",
     "eslint": "^8.57.1",
     "eslint-v9": "npm:eslint@^9.39.1",
     "expect-type": "^1.2.2",
@@ -76,13 +76,13 @@
     "opener": "^1.5.2",
     "rimraf": "^3.0.2",
     "semver": "^7.7.3",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.16.6",
     "typescript": "^5.9.3",
     "vite-plugin-eslint4b": "^0.6.0",
     "vitepress": "^1.0.0-rc.15"
   },
   "scripts": {
-    "build": "rimraf dist/ && tsup --config=tsup.config.mts",
+    "build": "rimraf dist/ && tsdown --config-loader='unrun' --config=tsdown.config.mts",
     "prepack": "npm run clean && npm run build",
     "preversion": "npm test",
     "version": "node scripts/update && git add .",
