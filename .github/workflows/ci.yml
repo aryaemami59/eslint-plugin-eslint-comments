@@ -81,7 +81,7 @@ jobs:
 
             - name: 📥 Install @types/eslint
               if: startsWith(matrix.eslint, '8')
-              run: npm install --save-dev @types/eslint@^8 -f
+              run: npm install --save-dev @types/eslint -f
 
             - name: ▶️ Run test script
               run: npm run test
