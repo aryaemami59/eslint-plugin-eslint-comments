@@ -118,7 +118,7 @@ jobs:
             fail-fast: false
 
             matrix:
-                eslint: [8, 9]
+                eslint: [9]
                 ts: ["5.7", "5.8", "5.9"]
 
         steps:
@@ -141,8 +141,8 @@ jobs:
               run: npm install --save-dev eslint@^${{ matrix.eslint }}
 
             - name: 📥 Install @types/eslint
-              if: matrix.eslint == 8
-              run: npm install --save-dev @types/eslint@^${{ matrix.eslint }} -f
+              if: startsWith(matrix.eslint, '8')
+              run: npm install --save-dev @types/eslint@^8 -f
 
             - name: 📥 Install TypeScript version ${{ matrix.ts }}
               run: npm install --save-dev typescript@${{ matrix.ts }} -f
