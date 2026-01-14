@@ -65,8 +65,10 @@
     },
     "sideEffects": false,
     "files": [
-        "lib",
-        "dist"
+        "configs.ts",
+        "index.ts",
+        "dist",
+        "lib"
     ],
     "scripts": {
         "build": "npm run clean && tsdown --config-loader='unrun' --config=tsdown.config.mts",
@@ -102,7 +104,7 @@
         "@eslint/css": "^0.14.1",
         "@eslint/js": "^9.39.2",
         "@types/cross-spawn": "^6.0.6",
-        "@types/node": "^25.0.7",
+        "@types/node": "^25.0.8",
         "@types/semver": "^7.7.1",
         "@vuepress/plugin-pwa": "^1.9.10",
         "cross-spawn": "^7.0.6",
@@ -119,7 +121,7 @@
         "rimraf": "^6.1.2",
         "rolldown": "^1.0.0-beta.59",
         "semver": "^7.7.3",
-        "tsdown": "^0.20.0-beta.1",
+        "tsdown": "^0.20.0-beta.2",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.53.0",
         "vite": "^6.4.1",

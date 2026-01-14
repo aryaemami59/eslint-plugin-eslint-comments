@@ -1,6 +1,6 @@
-import type { AST, SourceCode } from "eslint"
+import type { AST, Linter, SourceCode } from "eslint"
 
-export type Comment = ReturnType<SourceCode["getAllComments"]>[number]
+export type Comment = AST.Program["comments"][number]
 
 export type Position = AST.SourceLocation["start"]
 
@@ -36,3 +36,10 @@ export type DirectiveComment = {
      */
     loc: AST.SourceLocation
 }
+
+export type VerifyWithoutProcessors = (
+    this: Linter,
+    code: string | SourceCode,
+    config: Linter.LegacyConfig | Linter.Config,
+    filenameOrOptions?: string | Linter.LintOptions
+) => (Linter.LintMessage | Linter.SuppressedLintMessage)[]

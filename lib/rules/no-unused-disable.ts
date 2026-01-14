@@ -2,12 +2,12 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-import type { JSRuleDefinition } from "eslint"
+import type { Rule } from "eslint"
 // Patch `Linter#verify` to work.
 import patch from "../utils/patch.ts"
 patch()
 
-const rule: JSRuleDefinition = {
+const noUnusedDisable: Rule.RuleModule = {
     meta: {
         docs: {
             description: "disallow unused `eslint-disable` comments",
@@ -34,4 +34,4 @@ const rule: JSRuleDefinition = {
     },
 }
 
-export default rule
+export default noUnusedDisable

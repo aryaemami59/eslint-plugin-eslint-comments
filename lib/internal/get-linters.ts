@@ -7,7 +7,7 @@ import { createRequire } from "node:module"
 import * as path from "node:path"
 const needle = `${path.sep}node_modules${path.sep}eslint${path.sep}`
 
-const require = createRequire(__filename)
+const require = createRequire(import.meta.url)
 
 const getLinters = (): (typeof Linter)[] => {
     const eslintPaths = new Set(

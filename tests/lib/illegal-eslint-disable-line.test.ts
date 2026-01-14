@@ -57,22 +57,19 @@ function runESLint(code: string): Promise<Linter.LintMessage[]> {
 
 describe("multi-line eslint-disable-line comments", () => {
     // Register this plugin.
-    const selfPath = path.resolve(process.cwd())
+    const selfPath = path.resolve(import.meta.dirname, "../../")
     const pluginPath = path.resolve(
-        process.cwd(),
-        "node_modules/@eslint-community/eslint-plugin-eslint-comments"
+        import.meta.dirname,
+        "../../node_modules/@eslint-community/eslint-plugin-eslint-comments"
     )
+
     beforeAll(() => {
         fs.mkdirSync(path.dirname(pluginPath), { recursive: true })
         if (fs.existsSync(pluginPath)) {
             rimraf.sync(pluginPath)
+        } else {
+            fs.symlinkSync(selfPath, pluginPath, "junction")
         }
-
-        fs.symlinkSync(selfPath, pluginPath, "junction")
-    })
-
-    afterAll(() => {
-        rimraf.sync(pluginPath)
     })
 
     describe("`@eslint-community/eslint-comments/*` rules are valid", () => {
@@ -92,7 +89,7 @@ no-undef*/
                     const normalMessages = messages.filter(
                         (message) => message.ruleId != null
                     )
-                    assert.strictEqual(normalMessages.length, 0)
+                    assert.deepStrictEqual(normalMessages, [])
                 })
             )
         }

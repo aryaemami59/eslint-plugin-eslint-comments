@@ -2,11 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-import type { JSRuleDefinition } from "eslint"
+import type { Rule } from "eslint"
 import { getDisabledArea } from "../internal/disabled-area.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: JSRuleDefinition<{ MessageIds: "duplicate" | "duplicateRule" }> = {
+const noDuplicateDisable: Rule.RuleModule = {
     meta: {
         docs: {
             description: "disallow duplicate `eslint-disable` comments",
@@ -24,7 +24,7 @@ const rule: JSRuleDefinition<{ MessageIds: "duplicate" | "duplicateRule" }> = {
     },
 
     create(context) {
-        const disabledArea = getDisabledArea(context)
+        const disabledArea = getDisabledArea(context as never)
 
         for (const item of disabledArea.duplicateDisableDirectives) {
             context.report({
@@ -34,12 +34,11 @@ const rule: JSRuleDefinition<{ MessageIds: "duplicate" | "duplicateRule" }> = {
                     item.ruleId
                 )!,
                 messageId: item.ruleId ? "duplicateRule" : "duplicate",
-                data: item,
+                data: item as never,
             })
         }
-
         return {}
     },
 }
 
-export default rule
+export default noDuplicateDisable

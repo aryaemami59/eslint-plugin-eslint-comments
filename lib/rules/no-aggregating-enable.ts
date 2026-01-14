@@ -2,11 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-import type { JSRuleDefinition } from "eslint"
+import type { Rule } from "eslint"
 import { getDisabledArea } from "../internal/disabled-area.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: JSRuleDefinition<{ MessageIds: "aggregatingEnable" }> = {
+const noAggregatingEnable: Rule.RuleModule = {
     meta: {
         docs: {
             description:
@@ -25,7 +25,7 @@ const rule: JSRuleDefinition<{ MessageIds: "aggregatingEnable" }> = {
     },
 
     create(context) {
-        const disabledArea = getDisabledArea(context)
+        const disabledArea = getDisabledArea(context as never)
 
         for (const entry of disabledArea.numberOfRelatedDisableDirectives) {
             const comment = entry[0]
@@ -35,13 +35,12 @@ const rule: JSRuleDefinition<{ MessageIds: "aggregatingEnable" }> = {
                 context.report({
                     loc: utils.toForceLocation(comment.loc!),
                     messageId: "aggregatingEnable",
-                    data: { count },
+                    data: { count } as never,
                 })
             }
         }
-
         return {}
     },
 }
 
-export default rule
+export default noAggregatingEnable

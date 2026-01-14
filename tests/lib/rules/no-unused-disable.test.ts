@@ -64,7 +64,6 @@ function runESLint(
                 const results = JSON.parse(resultsStr)
                 resolve(results[0].messages)
             } catch (error) {
-                console.error(error)
                 reject(error)
             }
         })
@@ -76,23 +75,19 @@ function runESLint(
 
 describe("no-unused-disable", () => {
     // Register this plugin.
-    const selfPath = path.join(import.meta.dirname, "..", "..", "..")
-    const pluginPath = path.join(
-        selfPath,
-        "node_modules",
-        "@eslint-community/eslint-plugin-eslint-comments"
+    const selfPath = path.resolve(import.meta.dirname, "../../../")
+    const pluginPath = path.resolve(
+        import.meta.dirname,
+        "../../../node_modules/@eslint-community/eslint-plugin-eslint-comments"
     )
+
     beforeAll(() => {
         fs.mkdirSync(path.dirname(pluginPath), { recursive: true })
         if (fs.existsSync(pluginPath)) {
             rimraf.sync(pluginPath)
+        } else {
+            fs.symlinkSync(selfPath, pluginPath, "junction")
         }
-
-        fs.symlinkSync(selfPath, pluginPath, "junction")
-    })
-
-    afterAll(() => {
-        rimraf.sync(pluginPath)
     })
 
     describe("valid", () => {

@@ -44,8 +44,8 @@ export function toForceLocation(
  * @returns {object} The location of the given information.
  */
 export function toRuleIdLocation(
-    context: Rule.RuleContext,
-    comment: Comment,
+    context: Partial<Rule.RuleContext>,
+    comment: any,
     ruleId: string | null | undefined
 ): AST.SourceLocation | null | undefined {
     const commentLoc = getLoc(context, comment)
@@ -193,7 +193,7 @@ function divideDirectiveComment(
  * @returns {object} The source code location.
  */
 export function getLoc(
-    context: Rule.RuleContext,
+    context: Partial<Rule.RuleContext>,
     nodeOrToken: { loc?: AST.SourceLocation | null | undefined }
 ): AST.SourceLocation {
     const sourceCode =
