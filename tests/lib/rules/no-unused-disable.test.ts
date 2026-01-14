@@ -91,10 +91,6 @@ describe("no-unused-disable", () => {
         fs.symlinkSync(selfPath, pluginPath, "junction")
     })
 
-    afterAll(() => {
-        rimraf.sync(pluginPath)
-    })
-
     describe("valid", () => {
         for (const code of [
             `/*eslint no-undef:error*/

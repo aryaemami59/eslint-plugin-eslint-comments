@@ -71,10 +71,6 @@ describe("multi-line eslint-disable-line comments", () => {
         fs.symlinkSync(selfPath, pluginPath, "junction")
     })
 
-    afterAll(() => {
-        rimraf.sync(pluginPath)
-    })
-
     describe("`@eslint-community/eslint-comments/*` rules are valid", () => {
         for (const code of [
             `/* eslint @eslint-community/eslint-comments/no-use:[error, {allow: ['eslint']}] */
