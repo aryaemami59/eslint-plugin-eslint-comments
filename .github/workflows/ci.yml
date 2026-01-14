@@ -136,10 +136,6 @@ jobs:
               id: pack
               run: npm install "$(npm pack | tail -n1)"
 
-            - name: 📥 Uninstall @types/eslint
-              if: matrix.eslint != 8
-              run: npm uninstall @types/eslint
-
             - name: 📥 Install ESLint version ${{ matrix.eslint }}
               run: npm install --save-dev eslint@${{ matrix.eslint }}
 
@@ -148,9 +144,6 @@ jobs:
 
             - name: ▶️ Run typecheck script
               run: npm run typecheck
-
-            - name: 📝 List version of ESLint
-              run: npm why eslint @types/eslint
 
     release:
         name: 🚀 Release
