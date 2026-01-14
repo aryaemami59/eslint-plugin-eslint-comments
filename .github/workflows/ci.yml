@@ -104,7 +104,7 @@ jobs:
               run: npm install --legacy-peer-deps
 
             - name: ▶️ Run check-exports script
-              run: npm run check-exports
+              run: npm run check-exports -- --format=table
 
             - name: ▶️ Run typecheck script
               run: npm run typecheck
@@ -135,6 +135,10 @@ jobs:
             - name: Pack the package
               id: pack
               run: npm install "$(npm pack | tail -n1)"
+
+            - name: 📥 Install @types/eslint
+              if: matrix.eslint == 8
+              run: npm install --save-dev @types/eslint@${{ matrix.eslint }}
 
             - name: 📥 Install ESLint version ${{ matrix.eslint }}
               run: npm install --save-dev eslint@${{ matrix.eslint }}
