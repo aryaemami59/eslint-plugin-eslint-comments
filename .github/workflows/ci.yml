@@ -56,9 +56,6 @@ jobs:
                     - os: macos-latest
                       eslint: 9
                       node: 24
-                    - eslint: 8
-                      node: 24
-                      os: ubuntu-latest
                     - eslint: 8.57.0
                       node: 24
                       os: ubuntu-latest
@@ -142,7 +139,7 @@ jobs:
 
             - name: 📥 Install @types/eslint
               if: matrix.eslint == 8
-              run: npm install --save-dev @types/eslint@${{ matrix.eslint }}
+              run: npm install --save-dev @types/eslint@^${{ matrix.eslint }} -f
 
             - name: 📥 Install ESLint version ${{ matrix.eslint }}
               run: npm install --save-dev eslint@${{ matrix.eslint }}
