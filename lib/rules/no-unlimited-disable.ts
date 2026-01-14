@@ -25,7 +25,9 @@ const noUnlimitedDisable: Rule.RuleModule = {
     },
 
     create(context) {
-        for (const directiveComment of getAllDirectiveComments(context)) {
+        for (const directiveComment of getAllDirectiveComments(
+            context as never
+        )) {
             const { kind } = directiveComment
             if (
                 kind !== "eslint-disable" &&
