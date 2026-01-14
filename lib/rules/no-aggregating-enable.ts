@@ -25,7 +25,7 @@ const noAggregatingEnable: Rule.RuleModule = {
     },
 
     create(context) {
-        const disabledArea = getDisabledArea(context)
+        const disabledArea = getDisabledArea(context as never)
 
         for (const entry of disabledArea.numberOfRelatedDisableDirectives) {
             const comment = entry[0]
@@ -35,7 +35,7 @@ const noAggregatingEnable: Rule.RuleModule = {
                 context.report({
                     loc: utils.toForceLocation(comment.loc!),
                     messageId: "aggregatingEnable",
-                    data: { count },
+                    data: { count } as never,
                 })
             }
         }

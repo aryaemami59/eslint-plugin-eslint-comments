@@ -74,7 +74,9 @@ const requireDescription: Rule.RuleModule = {
             (context.options[0] && context.options[0].ignore) || []
         )
 
-        for (const directiveComment of getAllDirectiveComments(context)) {
+        for (const directiveComment of getAllDirectiveComments(
+            context as never
+        )) {
             if (ignores.has(directiveComment.kind)) {
                 continue
             }

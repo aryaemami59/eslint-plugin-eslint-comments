@@ -198,7 +198,7 @@ export function getLoc(
 ): AST.SourceLocation {
     const sourceCode =
         context.sourceCode || (context.getSourceCode && context.getSourceCode())
-    return sourceCode && typeof sourceCode.getLoc === "function"
-        ? sourceCode.getLoc(nodeOrToken)
+    return sourceCode && typeof (sourceCode as any).getLoc === "function"
+        ? (sourceCode as any).getLoc(nodeOrToken)
         : nodeOrToken.loc!
 }

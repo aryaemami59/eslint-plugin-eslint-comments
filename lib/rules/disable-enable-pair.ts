@@ -48,7 +48,7 @@ const disableEnablePair: Rule.RuleModule = {
     ): Rule.RuleListener {
         const allowWholeFile =
             context.options[0] && context.options[0].allowWholeFile
-        const disabledArea = getDisabledArea(context)
+        const disabledArea = getDisabledArea(context as never)
 
         const sourceCode = context.sourceCode || context.getSourceCode()
 

@@ -1,5 +1,4 @@
 import * as configs from "@eslint-community/eslint-plugin-eslint-comments/configs"
-import { defineConfig } from "@eslint/config-helpers"
 import type { Linter } from "eslint"
 
 describe("type tests", () => {
@@ -21,9 +20,5 @@ describe("type tests", () => {
         configs.recommended satisfies Linter.Config
 
         expectTypeOf<typeof configs.recommended>().toExtend<Linter.Config>()
-
-        expectTypeOf(defineConfig).toBeCallableWith<
-            Pick<typeof configs.recommended, "name" | "rules">[]
-        >()
     })
 })

@@ -24,7 +24,7 @@ const noDuplicateDisable: Rule.RuleModule = {
     },
 
     create(context) {
-        const disabledArea = getDisabledArea(context)
+        const disabledArea = getDisabledArea(context as never)
 
         for (const item of disabledArea.duplicateDisableDirectives) {
             context.report({
@@ -34,7 +34,7 @@ const noDuplicateDisable: Rule.RuleModule = {
                     item.ruleId
                 )!,
                 messageId: item.ruleId ? "duplicateRule" : "duplicate",
-                data: item,
+                data: item as never,
             })
         }
         return {}

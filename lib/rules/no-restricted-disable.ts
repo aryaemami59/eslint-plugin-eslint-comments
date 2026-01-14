@@ -36,7 +36,7 @@ const noRestrictedDisable: Rule.RuleModule = {
             options: NoRestrictedDisableOptions
         }
     ): Rule.RuleListener {
-        const disabledArea = getDisabledArea(context)
+        const disabledArea = getDisabledArea(context as never)
 
         if (context.options.length === 0) {
             return {}

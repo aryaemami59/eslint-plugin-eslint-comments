@@ -70,7 +70,9 @@ const noUse: Rule.RuleModule = {
             (context.options[0] && context.options[0].allow) || []
         )
 
-        for (const directiveComment of getAllDirectiveComments(context)) {
+        for (const directiveComment of getAllDirectiveComments(
+            context as never
+        )) {
             if (!allowed.has(directiveComment.kind)) {
                 context.report({
                     loc: utils.toForceLocation(directiveComment.loc),

@@ -9,6 +9,8 @@
     "types": "./dist/index.d.ts",
     "type": "module",
     "files": [
+        "configs.ts",
+        "index.ts",
         "dist",
         "lib"
     ],
