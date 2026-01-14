@@ -2,8 +2,9 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
+import type { TextSourceCode } from "@eslint/core"
 import type { AST, Linter, Rule, SourceCode } from "eslint"
-import type { Comment } from "./types.ts"
+import type { Comment, Position } from "./types.ts"
 import * as utils from "./utils.ts"
 
 const DELIMITER = /[\s,]+/gu
@@ -157,7 +158,7 @@ class DisabledArea {
      */
     private _getArea(
         ruleId: string | null,
-        location: AST.SourceLocation["start"]
+        location: Position
     ):
         | (AST.SourceLocation &
               Pick<Linter.LintMessage, "ruleId"> & {
@@ -188,8 +189,8 @@ class DisabledAreaForLanguagePlugin extends DisabledArea {
      * @param {import('@eslint/core').TextSourceCode} sourceCode - The source code to scan.
      * @returns {void}
      */
-    public _scan(sourceCode: SourceCode): void {
-        const disableDirectives = (sourceCode as any).getDisableDirectives?.()!
+    public _scan(sourceCode: TextSourceCode): void {
+        const disableDirectives = sourceCode.getDisableDirectives?.()
         for (const directive of disableDirectives!.directives) {
             if (
                 ![
@@ -205,12 +206,12 @@ class DisabledAreaForLanguagePlugin extends DisabledArea {
                 ? directive.value.split(DELIMITER)
                 : null
 
-            const loc: AST.SourceLocation = (sourceCode as any).getLoc(
+            const loc: AST.SourceLocation = sourceCode.getLoc(
                 directive.node
             )
             if (directive.type === "disable") {
                 this._disable(
-                    directive.node as any,
+                    directive.node,
                     loc.start,
                     ruleIds,
                     "block"
