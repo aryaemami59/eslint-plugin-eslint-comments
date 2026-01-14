@@ -2,30 +2,13 @@
  * @author Yosuke Ota <https://github.com/ota-meshi>
  * See LICENSE file in root directory for full license.
  */
-import type { JSRuleDefinition } from "eslint"
+import type { Rule } from "eslint"
 import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: JSRuleDefinition<{
-    MessageIds: "missingDescription"
-    RuleOptions: [
-        {
-            ignore?: (
-                | "eslint"
-                | "eslint-disable"
-                | "eslint-disable-line"
-                | "eslint-disable-next-line"
-                | "eslint-enable"
-                | "eslint-env"
-                | "exported"
-                | "global"
-                | "globals"
-            )[]
-        },
-    ]
-}> = {
+const rule: Rule.RuleModule = {
+    // eslint-disable-next-line eslint-plugin/require-meta-default-options
     meta: {
-        defaultOptions: [{ ignore: [] }],
         docs: {
             description:
                 "require include descriptions in ESLint directive-comments",

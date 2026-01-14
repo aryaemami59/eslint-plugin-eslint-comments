@@ -1,5 +1,5 @@
 import type { TextSourceCode } from "@eslint/core"
-import type { AST, JSRuleDefinition, SourceCode } from "eslint"
+import type { AST, Rule, SourceCode } from "eslint"
 import type { Comment, DirectiveComment } from "./types.ts"
 import * as utils from "./utils.ts"
 
@@ -150,7 +150,7 @@ function extractCommentContent(text: string): string {
  * @returns {DirectiveComment[]} The all directive comments object for the rule context.
  */
 export function getAllDirectiveComments(
-    context: Parameters<JSRuleDefinition["create"]>[0] & {
+    context: Parameters<Rule.RuleModule["create"]>[0] & {
         sourceCode: TextSourceCode &
             (
                 | Required<

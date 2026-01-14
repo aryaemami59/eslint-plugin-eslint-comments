@@ -86,9 +86,9 @@ describe("no-unused-disable", () => {
         fs.mkdirSync(path.dirname(pluginPath), { recursive: true })
         if (fs.existsSync(pluginPath)) {
             rimraf.sync(pluginPath)
+        } else {
+            fs.symlinkSync(selfPath, pluginPath, "junction")
         }
-
-        fs.symlinkSync(selfPath, pluginPath, "junction")
     })
 
     describe("valid", () => {

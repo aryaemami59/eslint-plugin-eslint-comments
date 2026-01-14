@@ -2,17 +2,15 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-import type { JSRuleDefinition } from "eslint"
+import type { Rule } from "eslint"
 import ignore from "ignore"
 import { getDisabledArea } from "../internal/disabled-area.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: JSRuleDefinition<{
-    RuleOptions: string[]
-    MessageIds: "disallow"
-}> = {
+const rule: Rule.RuleModule = {
+    // eslint-disable-next-line eslint-plugin/require-meta-default-options
     meta: {
-        defaultOptions: [],
+        // defaultOptions: [],
         docs: {
             description:
                 "disallow `eslint-disable` comments about specific rules",

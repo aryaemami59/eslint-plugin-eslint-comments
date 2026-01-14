@@ -2,11 +2,11 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-import type { JSRuleDefinition } from "eslint"
+import type { Rule } from "eslint"
 import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: JSRuleDefinition<{ MessageIds: "unexpected" }> = {
+const rule: Rule.RuleModule = {
     meta: {
         docs: {
             description:

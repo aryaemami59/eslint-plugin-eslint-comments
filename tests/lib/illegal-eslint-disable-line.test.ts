@@ -66,9 +66,9 @@ describe("multi-line eslint-disable-line comments", () => {
         fs.mkdirSync(path.dirname(pluginPath), { recursive: true })
         if (fs.existsSync(pluginPath)) {
             rimraf.sync(pluginPath)
+        } else {
+            fs.symlinkSync(selfPath, pluginPath, "junction")
         }
-
-        fs.symlinkSync(selfPath, pluginPath, "junction")
     })
 
     describe("`@eslint-community/eslint-comments/*` rules are valid", () => {

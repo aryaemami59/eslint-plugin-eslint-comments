@@ -2,16 +2,14 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-import type { JSRuleDefinition } from "eslint"
+import type { Rule } from "eslint"
 import { getDisabledArea } from "../internal/disabled-area.ts"
 import * as utils from "../internal/utils.ts"
 
-const disableEnablePair: JSRuleDefinition<{
-    MessageIds: "missingPair" | "missingRulePair"
-    RuleOptions: { allowWholeFile?: boolean }[]
-}> = {
+const disableEnablePair: Rule.RuleModule = {
+    // eslint-disable-next-line eslint-plugin/require-meta-default-options
     meta: {
-        defaultOptions: [{ allowWholeFile: false }],
+        // defaultOptions: [{ allowWholeFile: false }],
         docs: {
             description:
                 "require a `eslint-enable` comment for every `eslint-disable` comment",

@@ -2,30 +2,14 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-import type { JSRuleDefinition } from "eslint"
+import type { Rule } from "eslint"
 import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: JSRuleDefinition<{
-    MessageIds: "disallow"
-    RuleOptions: [
-        {
-            allow?: (
-                | "eslint"
-                | "eslint-disable"
-                | "eslint-disable-line"
-                | "eslint-disable-next-line"
-                | "eslint-enable"
-                | "eslint-env"
-                | "exported"
-                | "global"
-                | "globals"
-            )[]
-        },
-    ]
-}> = {
+const rule: Rule.RuleModule = {
+    // eslint-disable-next-line eslint-plugin/require-meta-default-options
     meta: {
-        defaultOptions: [{ allow: [] }],
+        // defaultOptions: [{ allow: [] }],
         docs: {
             description: "disallow ESLint directive-comments",
             category: "Stylistic Issues",
