@@ -1,13 +1,13 @@
-import path from "path"
-import { fileURLToPath } from "url"
 import esbuild from "esbuild"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const pluginRoot = path.join(__dirname, "../..")
 const libRoot = path.join(pluginRoot, "lib")
-const index = path.join(pluginRoot, "index.js")
+const index = path.join(pluginRoot, "index.ts")
 
 export function vitePluginGetLinter() {
     return {
@@ -15,7 +15,7 @@ export function vitePluginGetLinter() {
         transform(_code, id) {
             if (
                 id.startsWith(libRoot) &&
-                /internal[\\/]get-linters\.js$/u.test(id)
+                /internal[\\/]get-linters\.ts$/u.test(id)
             ) {
                 return 'module.exports = () => [require("eslint").Linter]'
             }

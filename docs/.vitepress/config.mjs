@@ -1,17 +1,17 @@
-import { defineConfig } from "vitepress"
-import path from "path"
-import { fileURLToPath } from "url"
-import { vitePluginGetLinter, viteCommonjs } from "./vite-plugin.mjs"
+import { createRequire } from "node:module"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
 import eslint4b from "vite-plugin-eslint4b"
-import { createRequire } from "module"
+import { defineConfig } from "vitepress"
+import { viteCommonjs, vitePluginGetLinter } from "./vite-plugin.mjs"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const require = createRequire(import.meta.url)
 
-const { withCategories } = require("../../scripts/lib/rules")
-require("../../scripts/update-docs-headers")
-require("../../scripts/update-docs-index")
+const { withCategories } = require("../../scripts/lib/rules.ts")
+require("../../scripts/update-docs-headers.ts")
+require("../../scripts/update-docs-index.ts")
 
 export default defineConfig({
     title: "eslint-plugin-eslint-comments",

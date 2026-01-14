@@ -3,7 +3,10 @@
  * See LICENSE file in root directory for full license.
  */
 import * as fs from "node:fs"
+import { createRequire } from "node:module"
 import * as path from "node:path"
+
+const require = createRequire(import.meta.url)
 
 /**
  * @type {{id:string,name:string,category:string,description:string,recommended:boolean,fixable:boolean,deprecated:boolean,replacedBy:(string[]|null)}[]}
@@ -18,10 +21,10 @@ const rules: {
     deprecated: boolean
     replacedBy: string[] | null
 }[] = fs
-    .readdirSync(path.resolve(__dirname, "../../lib/rules"))
+    .readdirSync(path.resolve(import.meta.dirname, "../../lib/rules"))
     .map((fileName) => path.basename(fileName, ".ts"))
     .map((name) => {
-        const meta = require(`../../lib/rules/${name}`).meta
+        const meta = require(`../../lib/rules/${name}.ts`).default.meta
         return {
             id: `@eslint-community/eslint-comments/${name}`,
             name,

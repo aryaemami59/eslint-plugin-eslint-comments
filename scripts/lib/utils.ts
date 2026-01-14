@@ -13,8 +13,9 @@ const linter = new ESLint({ fix: true })
  * @param {string} text The text to format.
  * @returns {Promise<string>} The formatted text.
  */
-function format(text: string): Promise<string> {
-    return linter.lintText(text).then(([{ output }]) => output || text)
+async function format(text: string): Promise<string> {
+    const [{ output }] = await linter.lintText(text)
+    return output || text
 }
 
 /**
