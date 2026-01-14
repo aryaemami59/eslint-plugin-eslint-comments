@@ -1,8 +1,8 @@
 import { recommended } from "@eslint-community/eslint-plugin-eslint-comments/configs"
+import { defineConfig } from "@eslint/config-helpers"
 import js from "@eslint/js"
 import prettierConfig from "eslint-config-prettier/flat"
 import eslintPlugin from "eslint-plugin-eslint-plugin"
-import { defineConfig } from "eslint/config"
 import { configs } from "typescript-eslint"
 
 const eslintConfig = defineConfig([
