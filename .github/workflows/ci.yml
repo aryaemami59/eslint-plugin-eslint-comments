@@ -80,7 +80,7 @@ jobs:
               run: npm install --save-dev eslint@${{ matrix.eslint }}
 
             - name: 📥 Install @types/eslint
-              if: matrix.eslint == 8
+              if: matrix.eslint == 8 || startsWith(matrix.eslint, '8.')
               run: npm install --save-dev @types/eslint@^${{ matrix.eslint }} -f
 
             - name: ▶️ Run test script
@@ -137,12 +137,12 @@ jobs:
               id: pack
               run: npm install "$(npm pack | tail -n1)"
 
+            - name: 📥 Install ESLint version ${{ matrix.eslint }}
+              run: npm install --save-dev eslint@^${{ matrix.eslint }}
+
             - name: 📥 Install @types/eslint
               if: matrix.eslint == 8
               run: npm install --save-dev @types/eslint@^${{ matrix.eslint }} -f
-
-            - name: 📥 Install ESLint version ${{ matrix.eslint }}
-              run: npm install --save-dev eslint@^${{ matrix.eslint }}
 
             - name: 📥 Install TypeScript version ${{ matrix.ts }}
               run: npm install --save-dev typescript@${{ matrix.ts }} -f
