@@ -9,8 +9,8 @@
     "types": "./dist/index.d.ts",
     "type": "module",
     "files": [
-        "lib",
-        "dist"
+        "dist",
+        "lib"
     ],
     "exports": {
         ".": {
@@ -76,7 +76,7 @@
         "rimraf": "^6.1.2",
         "rolldown": "^1.0.0-beta.59",
         "semver": "^7.7.3",
-        "tsdown": "^0.20.0-beta.1",
+        "tsdown": "^0.20.0-beta.2",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.53.0",
         "vite": "^6.4.1",

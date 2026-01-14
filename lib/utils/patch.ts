@@ -2,8 +2,9 @@
  * @author Toru Nagashima <https://github.com/mysticatea>
  * See LICENSE file in root directory for full license.
  */
-import type { AST, Linter, SourceCode } from "eslint"
+import type { Linter, SourceCode } from "eslint"
 import getLinters from "../internal/get-linters.ts"
+import type { Comment, VerifyWithoutProcessors } from "../internal/types.ts"
 import { toRuleIdLocation } from "../internal/utils.ts"
 const quotedName = /'(.+?)'/u
 
@@ -41,7 +42,7 @@ function getSeverity(config: Linter.Config, ruleId: string): Linter.Severity {
 function getCommentAt(
     message: Linter.LintMessage,
     sourceCode: SourceCode | undefined
-): AST.Program["comments"][number] | undefined {
+): Comment | undefined {
     if (sourceCode != null) {
         const loc = { line: message.line, column: message.column - 1 }
         const index = sourceCode.getIndexFromLoc(loc)
@@ -80,16 +81,16 @@ function isUnusedDisableDirectiveError(message: Linter.LintMessage): boolean {
  */
 function createNoUnusedDisableError(
     ruleId: string,
-    severity: Linter.Severity,
+    severity: Linter.LintMessage["severity"],
     message: Linter.LintMessage,
-    comment: AST.Program["comments"][number] | undefined
+    comment: Comment | undefined
 ): Linter.LintMessage {
     const clone = Object.assign({}, message)
     const match = quotedName.exec(message.message)
     const targetRuleId = match && match[1]
 
     clone.ruleId = ruleId
-    clone.severity = severity as Linter.LintMessage["severity"]
+    clone.severity = severity
     clone.message = targetRuleId
         ? `'${targetRuleId}' rule is disabled but never reported.`
         : "ESLint rules are disabled but never reported."
@@ -97,7 +98,7 @@ function createNoUnusedDisableError(
 
     if (comment != null) {
         if (targetRuleId) {
-            const loc = toRuleIdLocation({} as any, comment, targetRuleId)
+            const loc = toRuleIdLocation({}, comment, targetRuleId)
             clone.line = loc?.start.line!
             clone.column = loc?.start.column! + 1
             clone.endLine = loc?.end.line
@@ -139,7 +140,7 @@ function convert(
     messages: Linter.LintMessage[],
     sourceCode: SourceCode | undefined,
     ruleId: string,
-    severity: Linter.Severity,
+    severity: Linter.LintMessage["severity"],
     keepAsIs: boolean
 ): Linter.LintMessage[] {
     for (let i = messages.length - 1; i >= 0; --i) {
@@ -169,14 +170,16 @@ const patch = (
     ruleId = "@eslint-community/eslint-comments/no-unused-disable"
 ): void => {
     for (const Linter of getLinters()) {
-        // @ts-expect-error
-        const verify0 = Linter.prototype._verifyWithoutProcessors
+        const verify0: VerifyWithoutProcessors =
+            // @ts-expect-error
+            Linter.prototype._verifyWithoutProcessors
         Object.defineProperty(Linter.prototype, "_verifyWithoutProcessors", {
             value: function _verifyWithoutProcessors(
+                this: Linter,
                 textOrSourceCode: SourceCode | string,
                 config: Linter.Config,
-                filenameOrOptions: Record<string, any> | string
-            ) {
+                filenameOrOptions?: string | Linter.LintOptions
+            ): (Linter.LintMessage | Linter.SuppressedLintMessage)[] {
                 const severity = getSeverity(config, ruleId)
                 if (severity === 0) {
                     return verify0.call(

@@ -3,6 +3,7 @@
  * See LICENSE file in root directory for full license.
  */
 import type { AST, Linter, Rule, SourceCode } from "eslint"
+import type { Comment } from "./types.ts"
 import * as utils from "./utils.ts"
 
 const DELIMITER = /[\s,]+/gu
@@ -14,21 +15,18 @@ const pool = new WeakMap<
 class DisabledArea {
     public areas: (AST.SourceLocation &
         NonNullable<Pick<Linter.LintMessage, "ruleId">> & {
-            comment: AST.Program["comments"][number]
+            comment: Comment
             kind: string
         })[]
     public duplicateDisableDirectives: {
-        comment: AST.Program["comments"][number]
+        comment: Comment
         ruleId: string | null
     }[]
     public unusedEnableDirectives: {
-        comment: AST.Program["comments"][number]
+        comment: Comment
         ruleId: string | null
     }[]
-    public numberOfRelatedDisableDirectives: Map<
-        AST.Program["comments"][number],
-        number
-    >
+    public numberOfRelatedDisableDirectives: Map<Comment, number>
 
     /**
      * Constructor.
@@ -51,10 +49,10 @@ class DisabledArea {
      * @protected
      */
     protected _disable(
-        comment: AST.Program["comments"][number],
+        comment: Comment,
         location: AST.SourceLocation["start"],
         ruleIds: string[] | null,
-        kind: Lowercase<AST.Program["comments"][number]["type"]>
+        kind: Lowercase<Comment["type"]>
     ): void {
         if (ruleIds) {
             for (const ruleId of ruleIds) {
@@ -96,10 +94,10 @@ class DisabledArea {
      * @protected
      */
     protected _enable(
-        comment: AST.Program["comments"][number],
+        comment: Comment,
         location: AST.SourceLocation["start"],
         ruleIds: string[] | null,
-        kind: Lowercase<AST.Program["comments"][number]["type"]>
+        kind: Lowercase<Comment["type"]>
     ): void {
         const relatedDisableDirectives = new Set()
 
@@ -163,7 +161,7 @@ class DisabledArea {
     ):
         | (AST.SourceLocation &
               Pick<Linter.LintMessage, "ruleId"> & {
-                  comment: AST.Program["comments"][number]
+                  comment: Comment
                   kind: string
               })
         | null {
