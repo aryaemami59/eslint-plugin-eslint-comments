@@ -206,12 +206,10 @@ class DisabledAreaForLanguagePlugin extends DisabledArea {
                 ? directive.value.split(DELIMITER)
                 : null
 
-            const loc: AST.SourceLocation = sourceCode.getLoc(
-                directive.node
-            )
+            const loc: AST.SourceLocation = sourceCode.getLoc(directive.node)
             if (directive.type === "disable") {
                 this._disable(
-                    directive.node,
+                    directive.node as any,
                     loc.start,
                     ruleIds,
                     "block"

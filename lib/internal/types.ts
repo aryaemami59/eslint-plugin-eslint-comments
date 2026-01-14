@@ -1,6 +1,5 @@
-import type { AST, Linter, SourceCode, Rule } from "eslint"
+import type { AST, Linter, SourceCode } from "eslint"
 
-// export type Comment =  Rule.Node
 export type Comment = AST.Program["comments"][number]
 
 export type Position = AST.SourceLocation["start"]
@@ -38,24 +37,12 @@ export type DirectiveComment = {
     loc: AST.SourceLocation
 }
 
-export type VerifyWithoutProcessors = {
-    // (
-    //     code: string | SourceCode,
-    //     config: Linter.LegacyConfig | Linter.Config | Linter.Config[],
-    //     filename?: string
-    // ): (Linter.LintMessage | Linter.SuppressedLintMessage)[]
-    // (
-    //     code: SourceCode | string,
-    //     config: Linter.LegacyConfig | Linter.Config | Linter.Config[],
-    //     options: Linter.LintOptions
-    // ): (Linter.LintMessage | Linter.SuppressedLintMessage)[]
-    (
-        this: Linter,
-        code: string | SourceCode,
-        config: Linter.LegacyConfig | Linter.Config,
-        filenameOrOptions?: string | Linter.LintOptions
-    ): (Linter.LintMessage | Linter.SuppressedLintMessage)[]
-}
+export type VerifyWithoutProcessors = (
+    this: Linter,
+    code: string | SourceCode,
+    config: Linter.LegacyConfig | Linter.Config,
+    filenameOrOptions?: string | Linter.LintOptions
+) => (Linter.LintMessage | Linter.SuppressedLintMessage)[]
 
 // export function _verifyWithoutProcessors(code: string | SourceCode, config: Linter.LegacyConfig | Linter.Config | Linter.Config[], filename?: string): (Linter.LintMessage | Linter.SuppressedLintMessage)[]
 // export function _verifyWithoutProcessors(code: SourceCode | string, config: Linter.LegacyConfig | Linter.Config | Linter.Config[], options: Linter.LintOptions): (Linter.LintMessage | Linter.SuppressedLintMessage)[]

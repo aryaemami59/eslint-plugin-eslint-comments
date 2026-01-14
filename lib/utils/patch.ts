@@ -98,7 +98,7 @@ function createNoUnusedDisableError(
 
     if (comment != null) {
         if (targetRuleId) {
-            const loc = toRuleIdLocation({}, comment, targetRuleId)
+            const loc = toRuleIdLocation({}, comment as any, targetRuleId)
             clone.line = loc?.start.line!
             clone.column = loc?.start.column! + 1
             clone.endLine = loc?.end.line

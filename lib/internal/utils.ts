@@ -5,10 +5,10 @@
 import escapeStringRegexp from "escape-string-regexp"
 import type { AST, Rule } from "eslint"
 import type {
-    Comment,
-    DirectiveComment,
-    DirectiveKind,
-    Position,
+  Comment,
+  DirectiveComment,
+  DirectiveKind,
+  Position,
 } from "./types.ts"
 
 const LINE_PATTERN = /[^\r\n\u2028\u2029]*(?:\r\n|[\r\n\u2028\u2029]|$)/gu
@@ -45,7 +45,7 @@ export function toForceLocation(
  */
 export function toRuleIdLocation(
     context: Partial<Rule.RuleContext>,
-    comment: AST.Token | (Rule.Node & Comment),
+    comment: any,
     ruleId: string | null | undefined
 ): AST.SourceLocation | null | undefined {
     const commentLoc = getLoc(context, comment)
