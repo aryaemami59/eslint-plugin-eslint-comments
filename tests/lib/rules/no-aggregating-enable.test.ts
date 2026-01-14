@@ -5,11 +5,11 @@
 import cssPlugin from "@eslint/css"
 import { Linter, RuleTester } from "eslint"
 import * as semver from "semver"
-import rule from "../../../lib/rules/no-aggregating-enable.ts"
+import noAggregatingEnable from "../../../lib/rules/no-aggregating-enable.ts"
 
 const tester = new RuleTester()
 
-tester.run("no-aggregating-enable", rule, {
+tester.run("no-aggregating-enable", noAggregatingEnable, {
     valid: [
         `
             /*eslint-disable no-redeclare*/

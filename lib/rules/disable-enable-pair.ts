@@ -6,10 +6,13 @@ import type { Rule } from "eslint"
 import { getDisabledArea } from "../internal/disabled-area.ts"
 import * as utils from "../internal/utils.ts"
 
+export type DisableEnablePairOptions = {
+    allowWholeFile?: boolean
+}
+
 const disableEnablePair: Rule.RuleModule = {
     // eslint-disable-next-line eslint-plugin/require-meta-default-options
     meta: {
-        // defaultOptions: [{ allowWholeFile: false }],
         docs: {
             description:
                 "require a `eslint-enable` comment for every `eslint-disable` comment",
@@ -38,7 +41,11 @@ const disableEnablePair: Rule.RuleModule = {
         type: "suggestion",
     },
 
-    create(context) {
+    create(
+        context: Omit<Rule.RuleContext, "options"> & {
+            options: [disableEnablePairOptions: DisableEnablePairOptions]
+        }
+    ): Rule.RuleListener {
         const allowWholeFile =
             context.options[0] && context.options[0].allowWholeFile
         const disabledArea = getDisabledArea(context)
@@ -73,7 +80,6 @@ const disableEnablePair: Rule.RuleModule = {
                 data: area as Record<string, any>,
             })
         }
-
         return {}
     },
 }

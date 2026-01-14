@@ -6,7 +6,7 @@ import type { Rule } from "eslint"
 import { getDisabledArea } from "../internal/disabled-area.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: Rule.RuleModule = {
+const noAggregatingEnable: Rule.RuleModule = {
     meta: {
         docs: {
             description:
@@ -39,9 +39,8 @@ const rule: Rule.RuleModule = {
                 })
             }
         }
-
         return {}
     },
 }
 
-export default rule
+export default noAggregatingEnable

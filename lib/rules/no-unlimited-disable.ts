@@ -6,7 +6,7 @@ import type { Rule } from "eslint"
 import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: Rule.RuleModule = {
+const noUnlimitedDisable: Rule.RuleModule = {
     meta: {
         docs: {
             description:
@@ -47,4 +47,4 @@ const rule: Rule.RuleModule = {
     },
 }
 
-export default rule
+export default noUnlimitedDisable

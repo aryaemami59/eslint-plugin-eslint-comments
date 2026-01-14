@@ -7,7 +7,7 @@ import type { Rule } from "eslint"
 import patch from "../utils/patch.ts"
 patch()
 
-const rule: Rule.RuleModule = {
+const noUnusedDisable: Rule.RuleModule = {
     meta: {
         docs: {
             description: "disallow unused `eslint-disable` comments",
@@ -34,4 +34,4 @@ const rule: Rule.RuleModule = {
     },
 }
 
-export default rule
+export default noUnusedDisable

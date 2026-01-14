@@ -3,10 +3,10 @@
  * See LICENSE file in root directory for full license.
  */
 import { RuleTester } from "eslint"
-import rule from "../../../lib/rules/no-unused-enable.ts"
+import noUnusedEnable from "../../../lib/rules/no-unused-enable.ts"
 const tester = new RuleTester()
 
-tester.run("no-unused-enable", rule, {
+tester.run("no-unused-enable", noUnusedEnable, {
     valid: [
         `
 /*eslint no-undef:error*/

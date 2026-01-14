@@ -5,11 +5,11 @@
 import cssPlugin from "@eslint/css"
 import { Linter, RuleTester } from "eslint"
 import * as semver from "semver"
-import rule from "../../../lib/rules/no-duplicate-disable.ts"
+import noDuplicateDisable from "../../../lib/rules/no-duplicate-disable.ts"
 
 const tester = new RuleTester()
 
-tester.run("no-duplicate-disable", rule, {
+tester.run("no-duplicate-disable", noDuplicateDisable, {
     valid: [
         `
 //eslint-disable-line

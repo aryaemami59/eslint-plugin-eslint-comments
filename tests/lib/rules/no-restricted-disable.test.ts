@@ -5,7 +5,7 @@
 import cssPlugin from "@eslint/css"
 import { Linter, RuleTester } from "eslint"
 import * as semver from "semver"
-import rule from "../../../lib/rules/no-restricted-disable.ts"
+import noRestrictedDisable from "../../../lib/rules/no-restricted-disable.ts"
 
 const coreRules = new Linter({ configType: "eslintrc" }).getRules()
 let tester = null
@@ -32,7 +32,7 @@ if (typeof RuleTester.prototype.defineRule === "function") {
     })
 }
 
-tester.run("no-restricted-disable", rule, {
+tester.run("no-restricted-disable", noRestrictedDisable, {
     valid: [
         "/*eslint-disable*/",
         "//eslint-disable-line",

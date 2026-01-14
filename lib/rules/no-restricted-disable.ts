@@ -7,10 +7,11 @@ import ignore from "ignore"
 import { getDisabledArea } from "../internal/disabled-area.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: Rule.RuleModule = {
+export type NoRestrictedDisableOptions = string[]
+
+const noRestrictedDisable: Rule.RuleModule = {
     // eslint-disable-next-line eslint-plugin/require-meta-default-options
     meta: {
-        // defaultOptions: [],
         docs: {
             description:
                 "disallow `eslint-disable` comments about specific rules",
@@ -30,7 +31,11 @@ const rule: Rule.RuleModule = {
         type: "suggestion",
     },
 
-    create(context) {
+    create(
+        context: Omit<Rule.RuleContext, "options"> & {
+            options: NoRestrictedDisableOptions
+        }
+    ): Rule.RuleListener {
         const disabledArea = getDisabledArea(context)
 
         if (context.options.length === 0) {
@@ -57,9 +62,8 @@ const rule: Rule.RuleModule = {
                 })
             }
         }
-
         return {}
     },
 }
 
-export default rule
+export default noRestrictedDisable

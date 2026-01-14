@@ -5,11 +5,11 @@
 import cssPlugin from "@eslint/css"
 import { Linter, RuleTester } from "eslint"
 import * as semver from "semver"
-import rule from "../../../lib/rules/disable-enable-pair.ts"
+import disableEnablePair from "../../../lib/rules/disable-enable-pair.ts"
 
 const tester = new RuleTester()
 
-tester.run("disable-enable-pair", rule, {
+tester.run("disable-enable-pair", disableEnablePair, {
     valid: [
         `
 /*eslint-disable*/

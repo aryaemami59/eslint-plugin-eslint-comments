@@ -5,11 +5,11 @@
 import cssPlugin from "@eslint/css"
 import { Linter, RuleTester } from "eslint"
 import * as semver from "semver"
-import rule from "../../../lib/rules/no-unlimited-disable.ts"
+import noUnlimitedDisable from "../../../lib/rules/no-unlimited-disable.ts"
 
 const tester = new RuleTester()
 
-tester.run("no-unlimited-disable", rule, {
+tester.run("no-unlimited-disable", noUnlimitedDisable, {
     valid: [
         "/*eslint-enable*/",
         "/*eslint-disable eqeqeq*/",

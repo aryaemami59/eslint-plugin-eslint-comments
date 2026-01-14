@@ -43,6 +43,3 @@ export type VerifyWithoutProcessors = (
     config: Linter.LegacyConfig | Linter.Config,
     filenameOrOptions?: string | Linter.LintOptions
 ) => (Linter.LintMessage | Linter.SuppressedLintMessage)[]
-
-// export function _verifyWithoutProcessors(code: string | SourceCode, config: Linter.LegacyConfig | Linter.Config | Linter.Config[], filename?: string): (Linter.LintMessage | Linter.SuppressedLintMessage)[]
-// export function _verifyWithoutProcessors(code: SourceCode | string, config: Linter.LegacyConfig | Linter.Config | Linter.Config[], options: Linter.LintOptions): (Linter.LintMessage | Linter.SuppressedLintMessage)[]

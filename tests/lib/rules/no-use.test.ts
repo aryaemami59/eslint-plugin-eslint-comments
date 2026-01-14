@@ -5,11 +5,11 @@
 import cssPlugin from "@eslint/css"
 import { Linter, RuleTester } from "eslint"
 import semver from "semver"
-import rule from "../../../lib/rules/no-use.ts"
+import noUse from "../../../lib/rules/no-use.ts"
 
 const tester = new RuleTester()
 
-tester.run("no-use", rule, {
+tester.run("no-use", noUse, {
     valid: [
         "// eslint foo",
         "// eslint-disable",

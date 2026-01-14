@@ -6,10 +6,23 @@ import type { Rule } from "eslint"
 import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: Rule.RuleModule = {
+export type NoUseOptions = {
+    allow?: (
+        | "eslint"
+        | "eslint-disable"
+        | "eslint-disable-line"
+        | "eslint-disable-next-line"
+        | "eslint-enable"
+        | "eslint-env"
+        | "exported"
+        | "global"
+        | "globals"
+    )[]
+}
+
+const noUse: Rule.RuleModule = {
     // eslint-disable-next-line eslint-plugin/require-meta-default-options
     meta: {
-        // defaultOptions: [{ allow: [] }],
         docs: {
             description: "disallow ESLint directive-comments",
             category: "Stylistic Issues",
@@ -50,7 +63,9 @@ const rule: Rule.RuleModule = {
         type: "suggestion",
     },
 
-    create(context) {
+    create(
+        context: Omit<Rule.RuleContext, "options"> & { options: [NoUseOptions] }
+    ): Rule.RuleListener {
         const allowed = new Set(
             (context.options[0] && context.options[0].allow) || []
         )
@@ -63,9 +78,8 @@ const rule: Rule.RuleModule = {
                 })
             }
         }
-
         return {}
     },
 }
 
-export default rule
+export default noUse

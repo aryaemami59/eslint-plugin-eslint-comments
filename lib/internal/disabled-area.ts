@@ -51,7 +51,7 @@ class DisabledArea {
      */
     protected _disable(
         comment: Comment,
-        location: AST.SourceLocation["start"],
+        location: Position,
         ruleIds: string[] | null,
         kind: Lowercase<Comment["type"]>
     ): void {
@@ -96,11 +96,11 @@ class DisabledArea {
      */
     protected _enable(
         comment: Comment,
-        location: AST.SourceLocation["start"],
+        location: Position,
         ruleIds: string[] | null,
         kind: Lowercase<Comment["type"]>
     ): void {
-        const relatedDisableDirectives = new Set()
+        const relatedDisableDirectives = new Set<Comment>()
 
         if (ruleIds) {
             for (const ruleId of ruleIds) {
@@ -243,9 +243,7 @@ class DisabledAreaForLegacy extends DisabledArea {
      * @returns {void}
      */
     public _scan(sourceCode: SourceCode): void {
-        for (const comment of (
-            sourceCode as any
-        ).getAllComments() as AST.Program["comments"]) {
+        for (const comment of sourceCode.getAllComments()) {
             const directiveComment = utils.parseDirectiveComment(comment)
             if (directiveComment == null) {
                 continue
@@ -295,13 +293,15 @@ class DisabledAreaForLegacy extends DisabledArea {
  * @param {import("@eslint/core").RuleContext} context - The rule context code to get.
  * @returns {DisabledArea} The singleton object for the rule context.
  */
-export function getDisabledArea(context: Rule.RuleContext): DisabledArea {
+export function getDisabledArea(
+    context: Rule.RuleContext & { sourceCode: TextSourceCode }
+): DisabledArea {
     const sourceCode = context.sourceCode || context.getSourceCode()
     let retv = pool.get(sourceCode.ast)
 
     if (retv == null) {
         retv =
-            typeof (sourceCode as any).getDisableDirectives === "function"
+            typeof sourceCode.getDisableDirectives === "function"
                 ? new DisabledAreaForLanguagePlugin()
                 : new DisabledAreaForLegacy()
         retv._scan(sourceCode)

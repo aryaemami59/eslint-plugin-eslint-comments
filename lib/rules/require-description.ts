@@ -6,7 +6,21 @@ import type { Rule } from "eslint"
 import { getAllDirectiveComments } from "../internal/get-all-directive-comments.ts"
 import * as utils from "../internal/utils.ts"
 
-const rule: Rule.RuleModule = {
+export type RequireDescriptionOptions = {
+    ignore?: (
+        | "eslint"
+        | "eslint-disable"
+        | "eslint-disable-line"
+        | "eslint-disable-next-line"
+        | "eslint-enable"
+        | "eslint-env"
+        | "exported"
+        | "global"
+        | "globals"
+    )[]
+}
+
+const requireDescription: Rule.RuleModule = {
     // eslint-disable-next-line eslint-plugin/require-meta-default-options
     meta: {
         docs: {
@@ -51,7 +65,11 @@ const rule: Rule.RuleModule = {
         type: "suggestion",
     },
 
-    create(context) {
+    create(
+        context: Omit<Rule.RuleContext, "options"> & {
+            options: [RequireDescriptionOptions]
+        }
+    ): Rule.RuleListener {
         const ignores = new Set(
             (context.options[0] && context.options[0].ignore) || []
         )
@@ -67,9 +85,8 @@ const rule: Rule.RuleModule = {
                 })
             }
         }
-
         return {}
     },
 }
 
-export default rule
+export default requireDescription

@@ -3,10 +3,10 @@
  * See LICENSE file in root directory for full license.
  */
 import { RuleTester } from "eslint"
-import rule from "../../../lib/rules/require-description.ts"
+import requireDescription from "../../../lib/rules/require-description.ts"
 const tester = new RuleTester()
 
-tester.run("require-description", rule, {
+tester.run("require-description", requireDescription, {
     valid: [
         '/* eslint eqeqeq: "off", curly: "error" -- Here\'s a description about why this configuration is necessary. */',
         "/* eslint-disable -- description */",
