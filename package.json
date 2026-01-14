@@ -2,16 +2,35 @@
     "name": "@eslint-community/eslint-plugin-eslint-comments",
     "version": "0.0.0-semantically-released",
     "description": "Additional ESLint rules for ESLint directive comments.",
-    "engines": {
-        "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
-    },
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "type": "module",
-    "files": [
-        "lib",
-        "dist"
+    "keywords": [
+        "eslint",
+        "eslintplugin",
+        "eslint-plugin",
+        "plugin",
+        "comment",
+        "comments",
+        "directive",
+        "global",
+        "globals",
+        "exported",
+        "eslint-env",
+        "eslint-enable",
+        "eslint-disable",
+        "eslint-disable-line",
+        "eslint-disable-next-line"
     ],
+    "homepage": "https://github.com/eslint-community/eslint-plugin-eslint-comments#readme",
+    "bugs": {
+        "url": "https://github.com/eslint-community/eslint-plugin-eslint-comments/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eslint-community/eslint-plugin-eslint-comments"
+    },
+    "funding": "https://opencollective.com/eslint",
+    "license": "MIT",
+    "author": "Toru Nagashima",
+    "type": "module",
     "exports": {
         ".": {
             "import": {
@@ -35,6 +54,8 @@
         },
         "./package.json": "./package.json"
     },
+    "main": "./dist/index.js",
+    "types": "./types/index.d.ts",
     "typesVersions": {
         "*": {
             "configs": [
@@ -43,8 +64,30 @@
         }
     },
     "sideEffects": false,
-    "peerDependencies": {
-        "eslint": "^8.0.0 || ^9.0.0"
+    "files": [
+        "lib",
+        "dist"
+    ],
+    "scripts": {
+        "build": "npm run clean && tsdown --config-loader='unrun' --config=tsdown.config.mts",
+        "check-exports": "attw --pack",
+        "clean": "rimraf -v .nyc_output/ coverage/ docs/.vitepress/cache/ dist/ .rolldown/",
+        "coverage": "nyc report --reporter lcov && opener coverage/lcov-report/index.html",
+        "docs:build": "vitepress build docs",
+        "docs:watch": "vitepress dev docs",
+        "format": "npm run -s format:prettier -- --write",
+        "format:check": "npm run -s format:prettier -- --check",
+        "format:prettier": "prettier .",
+        "lint": "run-p lint:*",
+        "lint:eslint": "eslint --config=eslint.config.mjs .",
+        "lint:format": "npm run -s format:check",
+        "test": "vitest --run --config=vitest.config.mts",
+        "typecheck": "tsc -p tsconfig.json",
+        "prepack": "npm run build",
+        "preversion": "npm test",
+        "version": "node scripts/update && git add .",
+        "postversion": "git push && git push --tags",
+        "watch": "npm run -s test -- --watch --growl"
     },
     "dependencies": {
         "escape-string-regexp": "^4.0.0",
@@ -84,53 +127,10 @@
         "vitepress": "^1.6.4",
         "vitest": "^4.0.17"
     },
-    "scripts": {
-        "build": "npm run clean && tsdown --config-loader='unrun' --config=tsdown.config.mts",
-        "prepack": "npm run build",
-        "preversion": "npm test",
-        "version": "node scripts/update && git add .",
-        "postversion": "git push && git push --tags",
-        "clean": "rimraf -v .nyc_output/ coverage/ docs/.vitepress/cache/ dist/ .rolldown/",
-        "docs:build": "vitepress build docs",
-        "docs:watch": "vitepress dev docs",
-        "format": "npm run -s format:prettier -- --write",
-        "format:prettier": "prettier .",
-        "format:check": "npm run -s format:prettier -- --check",
-        "lint": "run-p lint:*",
-        "lint:eslint": "eslint --config=eslint.config.mjs .",
-        "lint:format": "npm run -s format:check",
-        "test": "vitest --run --config=vitest.config.mts",
-        "typecheck": "tsc -p tsconfig.json",
-        "check-exports": "attw --pack",
-        "coverage": "nyc report --reporter lcov && opener coverage/lcov-report/index.html",
-        "watch": "npm run -s test -- --watch --growl"
+    "peerDependencies": {
+        "eslint": "^8.0.0 || ^9.0.0"
     },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/eslint-community/eslint-plugin-eslint-comments"
-    },
-    "keywords": [
-        "eslint",
-        "eslintplugin",
-        "eslint-plugin",
-        "plugin",
-        "comment",
-        "comments",
-        "directive",
-        "global",
-        "globals",
-        "exported",
-        "eslint-env",
-        "eslint-enable",
-        "eslint-disable",
-        "eslint-disable-line",
-        "eslint-disable-next-line"
-    ],
-    "author": "Toru Nagashima",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/eslint-community/eslint-plugin-eslint-comments/issues"
-    },
-    "homepage": "https://github.com/eslint-community/eslint-plugin-eslint-comments#readme",
-    "funding": "https://opencollective.com/eslint"
+    "engines": {
+        "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
+    }
 }
