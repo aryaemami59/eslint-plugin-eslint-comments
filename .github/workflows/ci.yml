@@ -84,7 +84,7 @@ jobs:
 
             - name: 📥 Install @types/eslint
               if: matrix.eslint == 8 || matrix.eslint == '8.57.0'
-              run: npm install --save-dev @types/eslint@${{ matrix.eslint }}
+              run: npm install --save-dev @types/eslint@${{ matrix.eslint }} -f
 
             - name: ▶️ Run test script
               run: npm run test
