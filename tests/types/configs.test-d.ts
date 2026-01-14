@@ -1,6 +1,6 @@
 import * as configs from "@eslint-community/eslint-plugin-eslint-comments/configs"
+import { defineConfig } from "@eslint/config-helpers"
 import type { Linter } from "eslint"
-import { defineConfig } from "eslint/config"
 
 describe("type tests", () => {
     test("configs.recommended is a valid ESLint config type", () => {
